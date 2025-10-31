@@ -331,10 +331,10 @@ export function ProfilePage(): React.ReactElement {
 
       {/* Navigation Tabs */}
       <div className="mb-8">
-        <nav className="flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
+        <nav className="flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto">
           <Link
             to="/profile"
-            className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
               !section 
                 ? 'bg-white dark:bg-gray-700 shadow-sm' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
@@ -349,7 +349,7 @@ export function ProfilePage(): React.ReactElement {
           </Link>
           <Link
             to="/profile/events"
-            className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
               section === 'events' 
                 ? 'bg-white dark:bg-gray-700 shadow-sm' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
@@ -363,7 +363,7 @@ export function ProfilePage(): React.ReactElement {
           </Link>
           <Link
             to="/profile/routes"
-            className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
               section === 'routes' 
                 ? 'bg-white dark:bg-gray-700 shadow-sm' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
@@ -377,7 +377,7 @@ export function ProfilePage(): React.ReactElement {
           </Link>
           <Link
             to="/profile/joined"
-            className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
               section === 'joined' 
                 ? 'bg-white dark:bg-gray-700 shadow-sm' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
@@ -392,7 +392,7 @@ export function ProfilePage(): React.ReactElement {
             {(profile.user.role === 'provider' || profile.user.role === 'admin') && (
             <Link
               to="/profile/create-event"
-              className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
                 section === 'create-event' 
                   ? 'bg-white dark:bg-gray-700 shadow-sm' 
                   : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'

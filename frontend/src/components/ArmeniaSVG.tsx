@@ -86,6 +86,21 @@ export function ArmeniaSVG(): React.ReactElement {
       containerRef.current.innerHTML = text
       const svg = containerRef.current.querySelector('svg') as SVGSVGElement | null
       if (!svg) return
+      
+      // Mobile-ում քարտեզը ավելի փոքր scale-ով ցուցադրել
+      const isMobile = window.innerWidth <= 768
+      const isSmallMobile = window.innerWidth <= 480
+      if (svg) {
+        if (isSmallMobile) {
+          svg.style.transform = 'scale(0.6)'
+        } else if (isMobile) {
+          svg.style.transform = 'scale(0.7)'
+        }
+        svg.style.transformOrigin = 'center center'
+        svg.style.maxWidth = '100%'
+        svg.style.width = '100%'
+      }
+      
       Object.entries(ID_TO_KEY).forEach(([id, key]) => {
         const path = svg.querySelector(`#${id}`) as SVGPathElement | null
         if (!path) return
@@ -95,15 +110,21 @@ export function ArmeniaSVG(): React.ReactElement {
         path.style.fill = regionColor
         path.style.transition = 'fill 150ms ease, filter 150ms ease, transform 150ms ease'
         
-        const enter = (e: MouseEvent) => {
+        const enter = (e: MouseEvent | TouchEvent) => {
+          const clientX = 'touches' in e ? e.touches[0]?.clientX : e.clientX
+          const clientY = 'touches' in e ? e.touches[0]?.clientY : e.clientY
           const regionName = t(`regions.${key}`)
           setHoverKey(regionName)
-          setTooltip({ visible: true, x: e.clientX, y: e.clientY, region: regionName, events: [] })
+          setTooltip({ visible: true, x: clientX || 0, y: clientY || 0, region: regionName, events: [] })
           path.style.filter = 'brightness(1.2) saturate(1.3)'
           path.style.transform = 'scale(1.05)'
           fetchEvents(key)
         }
-        const move = (e: MouseEvent) => setTooltip(t => ({ ...t, x: e.clientX, y: e.clientY }))
+        const move = (e: MouseEvent | TouchEvent) => {
+          const clientX = 'touches' in e ? e.touches[0]?.clientX : e.clientX
+          const clientY = 'touches' in e ? e.touches[0]?.clientY : e.clientY
+          setTooltip(t => ({ ...t, x: clientX || 0, y: clientY || 0 }))
+        }
         const leave = () => {
           setHoverKey('')
           setTooltip(t => ({ ...t, visible: false }))
@@ -113,27 +134,127 @@ export function ArmeniaSVG(): React.ReactElement {
         const click = () => {
           navigate(`/events?region=${encodeURIComponent(key)}`)
         }
-        path.addEventListener('mouseenter', enter)
-        path.addEventListener('mousemove', move)
+        
+        // Desktop events
+        path.addEventListener('mouseenter', enter as EventListener)
+        path.addEventListener('mousemove', move as EventListener)
         path.addEventListener('mouseleave', leave)
         path.addEventListener('click', click)
+        
+        // Mobile touch events
+        path.addEventListener('touchstart', enter as EventListener, { passive: true })
+        path.addEventListener('touchmove', move as EventListener, { passive: true })
+        path.addEventListener('touchend', leave, { passive: true })
+        path.addEventListener('touchcancel', leave, { passive: true })
+        
         cleanup.push(() => {
-          path.removeEventListener('mouseenter', enter)
-          path.removeEventListener('mousemove', move)
+          path.removeEventListener('mouseenter', enter as EventListener)
+          path.removeEventListener('mousemove', move as EventListener)
           path.removeEventListener('mouseleave', leave)
           path.removeEventListener('click', click)
+          path.removeEventListener('touchstart', enter as EventListener)
+          path.removeEventListener('touchmove', move as EventListener)
+          path.removeEventListener('touchend', leave)
+          path.removeEventListener('touchcancel', leave)
         })
       })
     }
     mount()
-    return () => { cleanup.forEach(fn => fn()) }
-  }, [navigate, i18n.language])
+    
+    // Handle window resize
+    const handleResize = () => {
+      if (containerRef.current) {
+        const svg = containerRef.current.querySelector('svg') as SVGSVGElement | null
+        if (svg) {
+          const isMobile = window.innerWidth <= 768
+          const isSmallMobile = window.innerWidth <= 480
+          if (isSmallMobile) {
+            svg.style.transform = 'scale(0.6)'
+            svg.style.transformOrigin = 'center center'
+            svg.style.maxWidth = '100%'
+            svg.style.width = '100%'
+          } else if (isMobile) {
+            svg.style.transform = 'scale(0.7)'
+            svg.style.transformOrigin = 'center center'
+            svg.style.maxWidth = '100%'
+            svg.style.width = '100%'
+          } else {
+            svg.style.transform = ''
+            svg.style.transformOrigin = ''
+            svg.style.maxWidth = ''
+            svg.style.width = ''
+          }
+        }
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    
+    return () => { 
+      cleanup.forEach(fn => fn())
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [navigate, i18n.language, t])
 
   return (
-    <div className="relative min-h-[380px]">
-      <div ref={containerRef} className="w-full [&_path]:cursor-pointer p-4" aria-label="Armenia map" />
+    <div className="relative min-h-[200px] md:min-h-[380px] w-full overflow-hidden">
+      <div 
+        ref={containerRef} 
+        className="w-full [&_path]:cursor-pointer p-0 md:p-4 overflow-hidden" 
+        aria-label="Armenia map"
+        style={{
+          touchAction: 'pan-x pan-y pinch-zoom'
+        }}
+      />
+      <style>{`
+        @media (max-width: 768px) {
+          [aria-label="Armenia map"] {
+            overflow-x: auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+            max-width: 100vw;
+            height: 300px;
+            touch-action: pan-x pan-y pinch-zoom;
+            padding: 0;
+          }
+          [aria-label="Armenia map"] svg {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100% !important;
+            min-width: unset !important;
+            transform: scale(0.7);
+            transform-origin: center center;
+            transition: transform 0.2s ease;
+            display: block;
+            margin: 0 auto;
+          }
+          [data-dropdown="user-account"] ~ div [aria-label="Armenia map"] svg {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100% !important;
+            transform: scale(0.7);
+            transform-origin: center center;
+          }
+        }
+        @media (max-width: 480px) {
+          [aria-label="Armenia map"] {
+            height: 250px;
+          }
+          [aria-label="Armenia map"] svg {
+            transform: scale(0.6);
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
       {tooltip.visible && (
-        <div style={{ left: tooltip.x + 12, top: tooltip.y + 12 }} className="pointer-events-none fixed z-50 min-w-[220px] opacity-100 rounded-2xl">
+        <div 
+          style={{ 
+            left: Math.min(tooltip.x + 12, window.innerWidth - 240), 
+            top: Math.min(tooltip.y + 12, window.innerHeight - 200),
+            maxWidth: 'calc(100vw - 24px)'
+          }} 
+          className="pointer-events-none fixed z-50 min-w-[200px] max-w-[240px] opacity-100 rounded-2xl"
+        >
           <div className="rounded-2xl p-3 bg-white/80 dark:bg-slate-900/80">
             <div className="flex items-center gap-2 mb-2">
               <div className="text-lg">📍</div>

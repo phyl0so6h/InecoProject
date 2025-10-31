@@ -311,15 +311,15 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                                 )}
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2 gap-2 min-w-0">
                             <button 
-                                className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                                className="px-2 sm:px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs sm:text-sm rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors whitespace-nowrap overflow-hidden text-ellipsis"
                                 onClick={() => setSelectedPlan(selectedPlan === plan.id ? null : plan.id)}
                             >
                                 {selectedPlan === plan.id ? t('travel.hideDetails') : t('travel.details')}
                             </button>
                             <button 
-                                className="px-3 py-2 text-white text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="px-2 sm:px-3 py-2 text-white text-xs sm:text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap overflow-hidden text-ellipsis"
                                 style={{backgroundColor: '#BC9E82'}}
                                 onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
                                 onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#BC9E82'}

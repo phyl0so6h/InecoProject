@@ -294,7 +294,11 @@ export function App(): React.ReactElement {
                   </button>
                   {auth ? (
                     <div className="flex-1">
-                      <UserAccount userRole={auth.role} onLogout={handleLogout} />
+                      <UserAccount 
+                        userRole={auth.role} 
+                        onLogout={handleLogout}
+                        onNavigate={() => setMobileMenuOpen(false)}
+                      />
                     </div>
                   ) : (
                     <NavLink 

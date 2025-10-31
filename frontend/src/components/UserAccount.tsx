@@ -6,9 +6,10 @@ import { createPortal } from 'react-dom'
 type Props = {
   userRole: string
   onLogout: () => void
+  onNavigate?: () => void // Callback to close mobile menu when navigating
 }
 
-export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
+export function UserAccount({ userRole, onLogout, onNavigate }: Props): React.ReactElement {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
@@ -70,6 +71,10 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           onClick={(e) => {
             e.stopPropagation()
             setIsOpen(false)
+            // Ensure mobile menu closes
+            if (onNavigate) {
+              onNavigate()
+            }
             navigate('/profile')
           }}
         >
@@ -84,6 +89,10 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           onClick={(e) => {
             e.stopPropagation()
             setIsOpen(false)
+            // Ensure mobile menu closes
+            if (onNavigate) {
+              onNavigate()
+            }
             navigate('/profile/events')
           }}
         >
@@ -98,6 +107,10 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           onClick={(e) => {
             e.stopPropagation()
             setIsOpen(false)
+            // Ensure mobile menu closes
+            if (onNavigate) {
+              onNavigate()
+            }
             navigate('/profile/routes')
           }}
         >
@@ -112,6 +125,10 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           onClick={(e) => {
             e.stopPropagation()
             setIsOpen(false)
+            // Ensure mobile menu closes
+            if (onNavigate) {
+              onNavigate()
+            }
             navigate('/profile/joined')
           }}
         >
@@ -127,6 +144,10 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
             onClick={(e) => {
               e.stopPropagation()
               setIsOpen(false)
+              // Ensure mobile menu closes
+              if (onNavigate) {
+                onNavigate()
+              }
               navigate('/profile/create-event')
             }}
           >

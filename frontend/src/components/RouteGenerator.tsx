@@ -503,10 +503,10 @@ export function RouteGenerator(): React.ReactElement {
 
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center max-w-full">
                 <button 
                     onClick={generate}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium btt"
+                    className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base flex-shrink-0"
                 >
                     {t('routes.generate')}
                 </button>
@@ -527,14 +527,14 @@ export function RouteGenerator(): React.ReactElement {
                         setEventId(''); 
                         setShowOptional(false);
                     }}
-                    className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium btt"
+                    className="px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium text-sm sm:text-base flex-shrink-0"
                 >
                     {t('routes.clear')}
                 </button>
                 <button 
                     onClick={save} 
                     disabled={!generated || saving || !localStorage.getItem('auth_token')}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 font-medium btt relative overflow-hidden"
+                    className="px-4 sm:px-6 py-2 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 font-medium text-sm sm:text-base relative overflow-hidden flex-shrink-0"
                     data-save-button
                 >
                     {saving && (
