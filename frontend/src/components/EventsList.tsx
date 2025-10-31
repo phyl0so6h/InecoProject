@@ -135,12 +135,23 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
         params.set('lng', i18n.language === 'en' ? 'en' : 'hy')
         setLoading(true)
         fetch(`${apiUrl}/api/events?${params.toString()}`)
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) {
+                console.error('Events fetch failed:', r.status, r.statusText)
+                throw new Error(`HTTP ${r.status}`)
+            }
+            return r.json()
+        })
         .then(d => {
+            console.log('Events response:', d)
             const items = Array.isArray(d.items) ? d.items : []
+            console.log('Parsed events:', items.length, 'items')
             setEvents(sortEvents(items))
         })
-        .catch(() => setEvents([]))
+        .catch((err) => {
+            console.error('Events fetch error:', err)
+            setEvents([])
+        })
         .finally(() => setLoading(false))
     }, [region, type, pricing, apiUrl, i18n.language])
 
