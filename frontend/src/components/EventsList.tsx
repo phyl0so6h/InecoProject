@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { buildApiUrl } from '../utils/api'
 
 type EventItem = {
     id: string
@@ -144,12 +145,8 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
         if (pricing) params.set('pricing', pricing)
         params.set('lng', i18n.language === 'en' ? 'en' : 'hy')
         setLoading(true)
-        // Build correct API URL: if apiUrl is already full URL, use it as-is
-        // If it's relative (/api), use it directly (for vite proxy in dev)
-        const eventsUrl = apiUrl.startsWith('http') 
-            ? `${apiUrl}/api/events?${params.toString()}`
-            : `${apiUrl}/events?${params.toString()}`
-        console.log('Fetching events from:', eventsUrl)
+        const eventsUrl = `${buildApiUrl('events')}?${params.toString()}`
+        console.log('Fetching events from:', eventsUrl, 'apiUrl:', apiUrl)
         fetch(eventsUrl)
         .then(r => {
             if (!r.ok) {
