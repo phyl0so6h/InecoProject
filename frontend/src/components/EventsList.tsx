@@ -148,18 +148,27 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
         const eventsUrl = `${buildApiUrl('api/events')}?${params.toString()}`
         console.log('Fetching events from:', eventsUrl, 'apiUrl:', apiUrl)
         fetch(eventsUrl)
-        .then(r => {
+        .then(async r => {
+            console.log('Response status:', r.status, r.ok, 'URL:', eventsUrl)
             if (!r.ok) {
-                console.error('Events fetch failed:', r.status, r.statusText)
-                throw new Error(`HTTP ${r.status}`)
+                const text = await r.text()
+                console.error('Events fetch failed:', r.status, r.statusText, 'Response:', text)
+                throw new Error(`HTTP ${r.status}: ${text}`)
             }
             return r.json()
         })
         .then(d => {
             console.log('Events response:', d)
-            const items = Array.isArray(d.items) ? d.items : []
+            console.log('Response type:', typeof d, 'Is array?', Array.isArray(d))
+            console.log('Has items?', 'items' in d, 'Items:', d.items)
+            const items = Array.isArray(d.items) ? d.items : (Array.isArray(d) ? d : [])
             console.log('Parsed events:', items.length, 'items')
-            setEvents(sortEvents(items))
+            if (items.length > 0) {
+                setEvents(sortEvents(items))
+            } else {
+                console.warn('No events found in response:', d)
+                setEvents([])
+            }
         })
         .catch((err) => {
             console.error('Events fetch error:', err)
