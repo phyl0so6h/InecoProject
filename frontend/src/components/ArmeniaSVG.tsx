@@ -87,40 +87,50 @@ export function ArmeniaSVG(): React.ReactElement {
       const svg = containerRef.current.querySelector('svg') as SVGSVGElement | null
       if (!svg) return
       
-      // Mobile-ում քարտեզը ավելի փոքր scale-ով ցուցադրել
+      // Mobile-ում քարտեզը ամբողջությամբ տեսանելի դարձնել
       const containerWidth = containerRef.current?.clientWidth || window.innerWidth
       const isMobile = window.innerWidth <= 768
       const isSmallMobile = window.innerWidth <= 480
       if (svg && containerRef.current) {
-        // Սպասել, որ SVG-ը լիովին load լինի
+        // SVG-ի բուն չափը (viewBox-ից կամ attribute-ներից)
+        const svgNativeWidth = parseFloat(svg.getAttribute('width') || '792') || 792
+        const svgNativeHeight = parseFloat(svg.getAttribute('height') || '802') || 802
+        
+        // Սպասել, որ SVG-ը լիովին render լինի
         setTimeout(() => {
           try {
-            // Ստանալ SVG-ի բուն չափը
-            const svgRect = svg.getBBox()
-            const svgWidth = svgRect.width || svg.clientWidth || 800
-            const svgHeight = svgRect.height || svg.clientHeight || 600
-            
             // Container-ի available width (padding-ներից հետո)
-            const availableWidth = containerWidth - 16 // 8px padding on each side
+            const padding = isSmallMobile ? 8 : 16
+            const availableWidth = containerWidth - padding * 2
             
             if (isSmallMobile || isMobile) {
-              // Հաշվարկել scale-ը, որպեսզի ամբողջ քարտեզը տեղավորվի
-              const widthScale = availableWidth / svgWidth
-              const scale = Math.min(widthScale * 0.98, isSmallMobile ? 0.45 : 0.55) // 2% margin for safety
+              // Հաշվարկել scale-ը, որպեսզի ամբողջ SVG-ը տեղավորվի container-ում
+              const widthScale = availableWidth / svgNativeWidth
+              const heightScale = (containerRef.current!.clientHeight || 250) / svgNativeHeight
               
-              svg.style.transform = `scale(${scale})`
-              svg.style.transformOrigin = 'center center'
-              svg.style.maxWidth = `${svgWidth * scale}px`
-              svg.style.width = `${svgWidth * scale}px`
-              svg.style.height = `${svgHeight * scale}px`
+              // Օգտագործել ավելի փոքրը, որպեսզի ամբողջը տեղավորվի
+              const scale = Math.min(widthScale * 0.95, heightScale * 0.95, isSmallMobile ? 0.4 : 0.5)
+              
+              // SVG-ի չափսերը set անել scale-ի հիման վրա
+              svg.setAttribute('width', `${svgNativeWidth * scale}`)
+              svg.setAttribute('height', `${svgNativeHeight * scale}`)
+              svg.style.width = `${svgNativeWidth * scale}px`
+              svg.style.height = `${svgNativeHeight * scale}px`
+              svg.style.maxWidth = '100%'
+              svg.style.maxHeight = '100%'
+              svg.style.display = 'block'
+              svg.style.margin = '0 auto'
             }
           } catch (e) {
-            // Fallback
-            const scale = isSmallMobile ? 0.45 : 0.55
-            svg.style.transform = `scale(${scale})`
-            svg.style.transformOrigin = 'center center'
+            // Fallback - ավելի փոքր scale
+            const scale = isSmallMobile ? 0.4 : 0.5
+            svg.style.width = `${svgNativeWidth * scale}px`
+            svg.style.height = `${svgNativeHeight * scale}px`
+            svg.style.maxWidth = '100%'
+            svg.style.display = 'block'
+            svg.style.margin = '0 auto'
           }
-        }, 150)
+        }, 200)
       }
       
       Object.entries(ID_TO_KEY).forEach(([id, key]) => {
@@ -189,37 +199,47 @@ export function ArmeniaSVG(): React.ReactElement {
         const svg = containerRef.current.querySelector('svg') as SVGSVGElement | null
         if (svg) {
           const containerWidth = containerRef.current.clientWidth || window.innerWidth
+          const containerHeight = containerRef.current.clientHeight || 250
           const isMobile = window.innerWidth <= 768
           const isSmallMobile = window.innerWidth <= 480
           
           if (isSmallMobile || isMobile) {
             try {
-              const svgRect = svg.getBBox()
-              const svgWidth = svgRect.width || svg.clientWidth || 800
-              const svgHeight = svgRect.height || svg.clientHeight || 600
-              const availableWidth = containerWidth - 16 // padding margin
+              const svgNativeWidth = parseFloat(svg.getAttribute('width') || '792') || 792
+              const svgNativeHeight = parseFloat(svg.getAttribute('height') || '802') || 802
+              const padding = isSmallMobile ? 8 : 16
+              const availableWidth = containerWidth - padding * 2
+              const availableHeight = containerHeight - padding * 2
               
-              if (svgWidth > 0) {
-                const widthScale = availableWidth / svgWidth
-                const maxScale = isSmallMobile ? 0.45 : 0.55
-                const scale = Math.min(widthScale * 0.98, maxScale)
-                
-                svg.style.transform = `scale(${scale})`
-                svg.style.transformOrigin = 'center center'
-                svg.style.maxWidth = `${svgWidth * scale}px`
-                svg.style.width = `${svgWidth * scale}px`
-                svg.style.height = `${svgHeight * scale}px`
-              }
+              // Հաշվարկել scale-ը, որպեսզի ամբողջը տեղավորվի
+              const widthScale = availableWidth / svgNativeWidth
+              const heightScale = availableHeight / svgNativeHeight
+              const scale = Math.min(widthScale * 0.95, heightScale * 0.95, isSmallMobile ? 0.4 : 0.5)
+              
+              // SVG-ի չափսերը direct set անել
+              svg.setAttribute('width', `${svgNativeWidth * scale}`)
+              svg.setAttribute('height', `${svgNativeHeight * scale}`)
+              svg.style.width = `${svgNativeWidth * scale}px`
+              svg.style.height = `${svgNativeHeight * scale}px`
+              svg.style.maxWidth = '100%'
+              svg.style.maxHeight = '100%'
+              svg.style.display = 'block'
+              svg.style.margin = '0 auto'
             } catch (e) {
-              // Fallback if getBBox fails
-              const scale = isSmallMobile ? 0.45 : 0.55
-              svg.style.transform = `scale(${scale})`
-              svg.style.transformOrigin = 'center center'
+              // Fallback
+              const svgNativeWidth = 792
+              const svgNativeHeight = 802
+              const scale = isSmallMobile ? 0.4 : 0.5
+              svg.style.width = `${svgNativeWidth * scale}px`
+              svg.style.height = `${svgNativeHeight * scale}px`
+              svg.style.maxWidth = '100%'
+              svg.style.display = 'block'
+              svg.style.margin = '0 auto'
             }
           }
         }
       }
-    }, 200)
+    }, 250)
     
     // Handle window resize
     const handleResize = () => {
@@ -227,40 +247,49 @@ export function ArmeniaSVG(): React.ReactElement {
         const svg = containerRef.current.querySelector('svg') as SVGSVGElement | null
         if (svg) {
           const containerWidth = containerRef.current.clientWidth || window.innerWidth
+          const containerHeight = containerRef.current.clientHeight || 250
           const isMobile = window.innerWidth <= 768
           const isSmallMobile = window.innerWidth <= 480
           
           if (isSmallMobile || isMobile) {
             try {
-              // Ստանալ SVG-ի բուն չափը
-              const svgRect = svg.getBBox()
-              const svgWidth = svgRect.width || svg.clientWidth || 800
-              const svgHeight = svgRect.height || svg.clientHeight || 600
-              const availableWidth = containerWidth - 16 // padding margin
+              const svgNativeWidth = parseFloat(svg.getAttribute('width') || '792') || 792
+              const svgNativeHeight = parseFloat(svg.getAttribute('height') || '802') || 802
+              const padding = isSmallMobile ? 8 : 16
+              const availableWidth = containerWidth - padding * 2
+              const availableHeight = containerHeight - padding * 2
               
-              if (svgWidth > 0) {
-                const widthScale = availableWidth / svgWidth
-                const maxScale = isSmallMobile ? 0.45 : 0.55
-                const scale = Math.min(widthScale * 0.98, maxScale)
-                
-                svg.style.transform = `scale(${scale})`
-                svg.style.transformOrigin = 'center center'
-                svg.style.maxWidth = `${svgWidth * scale}px`
-                svg.style.width = `${svgWidth * scale}px`
-                svg.style.height = `${svgHeight * scale}px`
-              }
+              const widthScale = availableWidth / svgNativeWidth
+              const heightScale = availableHeight / svgNativeHeight
+              const scale = Math.min(widthScale * 0.95, heightScale * 0.95, isSmallMobile ? 0.4 : 0.5)
+              
+              svg.setAttribute('width', `${svgNativeWidth * scale}`)
+              svg.setAttribute('height', `${svgNativeHeight * scale}`)
+              svg.style.width = `${svgNativeWidth * scale}px`
+              svg.style.height = `${svgNativeHeight * scale}px`
+              svg.style.maxWidth = '100%'
+              svg.style.maxHeight = '100%'
+              svg.style.display = 'block'
+              svg.style.margin = '0 auto'
             } catch (e) {
               // Fallback
-              const scale = isSmallMobile ? 0.45 : 0.55
-              svg.style.transform = `scale(${scale})`
-              svg.style.transformOrigin = 'center center'
+              const svgNativeWidth = 792
+              const svgNativeHeight = 802
+              const scale = isSmallMobile ? 0.4 : 0.5
+              svg.style.width = `${svgNativeWidth * scale}px`
+              svg.style.height = `${svgNativeHeight * scale}px`
+              svg.style.maxWidth = '100%'
+              svg.style.display = 'block'
+              svg.style.margin = '0 auto'
             }
           } else {
-            svg.style.transform = ''
-            svg.style.transformOrigin = ''
-            svg.style.maxWidth = ''
+            // Desktop - restore original size
+            svg.removeAttribute('width')
+            svg.removeAttribute('height')
             svg.style.width = ''
             svg.style.height = ''
+            svg.style.maxWidth = ''
+            svg.style.maxHeight = ''
           }
         }
       }
@@ -306,14 +335,15 @@ export function ArmeniaSVG(): React.ReactElement {
           }
           [aria-label="Armenia map"] svg {
             max-width: 100% !important;
+            max-height: 100% !important;
             width: auto !important;
             height: auto !important;
             min-width: unset !important;
-            transform-origin: center center !important;
-            transition: transform 0.2s ease;
-            display: block;
-            margin: 0 auto;
+            min-height: unset !important;
+            display: block !important;
+            margin: 0 auto !important;
             box-sizing: border-box;
+            object-fit: contain;
           }
         }
         @media (max-width: 480px) {
