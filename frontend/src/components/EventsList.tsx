@@ -145,7 +145,7 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
         if (pricing) params.set('pricing', pricing)
         params.set('lng', i18n.language === 'en' ? 'en' : 'hy')
         setLoading(true)
-        const eventsUrl = `${buildApiUrl('events')}?${params.toString()}`
+        const eventsUrl = `${buildApiUrl('api/events')}?${params.toString()}`
         console.log('Fetching events from:', eventsUrl, 'apiUrl:', apiUrl)
         fetch(eventsUrl)
         .then(r => {
