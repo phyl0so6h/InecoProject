@@ -758,7 +758,7 @@ app.get('/api/travel-plans', (req: Request, res: Response) => {
   res.json({ items: itemsWithEventTitles });
 });
 
-app.post('/travel-plans/:id/join', authenticate, (req: Request, res: Response) => {
+app.post('/api/travel-plans/:id/join', authenticate, (req: Request, res: Response) => {
   const plan = travelPlans.find(p => p.id === req.params.id);
   if (!plan) return res.status(404).json({ error: 'Not found' });
   if (plan.seats <= 0) return res.status(400).json({ error: 'No seats left' });

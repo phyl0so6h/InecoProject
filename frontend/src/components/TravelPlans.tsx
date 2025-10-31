@@ -73,7 +73,7 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                 alert(t('auth.required'))
                 return
             }
-            const res = await fetch(`${apiUrl}/travel-plans/${id}/join`, {
+            const res = await fetch(`${apiUrl}/api/travel-plans/${id}/join`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json', 
