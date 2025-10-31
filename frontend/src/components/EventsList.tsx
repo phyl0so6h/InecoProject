@@ -26,7 +26,11 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
     const [events, setEvents] = useState<EventItem[]>([])
     const [loading, setLoading] = useState<boolean>(false)
 
-    const apiUrl = useMemo(() => (import.meta as any).env?.VITE_API_URL || '/api', [])
+    const apiUrl = useMemo(() => {
+        const url = (import.meta as any).env?.VITE_API_URL || '/api'
+        console.log('EventsList apiUrl:', url, 'env:', (import.meta as any).env)
+        return url
+    }, [])
 
     // Helper function to convert region key to Armenian name for backend
     const getArmenianRegionName = (regionKey: string): string => {
@@ -155,9 +159,27 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
         .finally(() => setLoading(false))
     }, [region, type, pricing, apiUrl, i18n.language])
 
+    // Debug: Log current state
+    useEffect(() => {
+        console.log('EventsList state:', { 
+            eventsCount: events.length, 
+            loading, 
+            region, 
+            type, 
+            pricing,
+            apiUrl 
+        })
+    }, [events, loading, region, type, pricing, apiUrl])
+
     return (
         <div className="grid gap-4">
         {loading && <div className="opacity-70">{t('events.loading')}</div>}
+        {!loading && events.length === 0 && (
+            <div className="opacity-70 text-center py-8">
+                {t('events.empty')}
+                <div className="text-xs mt-2">Debug: No events found. Check console for details.</div>
+            </div>
+        )}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {events.map(ev => {
                 const status = getEventStatus(ev)
@@ -188,7 +210,6 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
                 </div>
                 )
             })}
-            {!loading && !events.length && <div className="opacity-70">{t('events.empty')}</div>}
         </div>
         </div>
     )
