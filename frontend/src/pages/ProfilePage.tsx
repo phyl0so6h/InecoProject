@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 interface UserProfile {
@@ -332,8 +332,8 @@ export function ProfilePage(): React.ReactElement {
       {/* Navigation Tabs */}
       <div className="mb-8">
         <nav className="flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <a
-            href="/profile"
+          <Link
+            to="/profile"
             className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
               !section 
                 ? 'bg-white dark:bg-gray-700 shadow-sm' 
@@ -346,9 +346,9 @@ export function ProfilePage(): React.ReactElement {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
             </svg>
             {t('profile.overview')}
-          </a>
-          <a
-            href="/profile/events"
+          </Link>
+          <Link
+            to="/profile/events"
             className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
               section === 'events' 
                 ? 'bg-white dark:bg-gray-700 shadow-sm' 
@@ -360,9 +360,9 @@ export function ProfilePage(): React.ReactElement {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             {t('profile.myEvents')}
-          </a>
-          <a
-            href="/profile/routes"
+          </Link>
+          <Link
+            to="/profile/routes"
             className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
               section === 'routes' 
                 ? 'bg-white dark:bg-gray-700 shadow-sm' 
@@ -374,9 +374,9 @@ export function ProfilePage(): React.ReactElement {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
             </svg>
             {t('profile.savedRoutes')}
-          </a>
-          <a
-            href="/profile/joined"
+          </Link>
+          <Link
+            to="/profile/joined"
             className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
               section === 'joined' 
                 ? 'bg-white dark:bg-gray-700 shadow-sm' 
@@ -388,10 +388,10 @@ export function ProfilePage(): React.ReactElement {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             {t('profile.joinedPlans')}
-          </a>
+          </Link>
             {(profile.user.role === 'provider' || profile.user.role === 'admin') && (
-            <a
-              href="/profile/create-event"
+            <Link
+              to="/profile/create-event"
               className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
                 section === 'create-event' 
                   ? 'bg-white dark:bg-gray-700 shadow-sm' 
@@ -403,7 +403,7 @@ export function ProfilePage(): React.ReactElement {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               {t('profile.createEvent')}
-            </a>
+            </Link>
           )}
         </nav>
       </div>

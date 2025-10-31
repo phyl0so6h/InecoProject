@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BrowserRouter, Routes, Route, Link, NavLink } from 'react-router-dom'
+import { HashRouter, Routes, Route, Link, NavLink } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
 import { EventsPage } from './pages/EventsPage'
 import { RoutesPage } from './pages/RoutesPage'
@@ -51,7 +51,7 @@ export function App(): React.ReactElement {
     try { localStorage.setItem('lng', next) } catch {}
   }
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="min-h-screen armenian-carpet-bg text-gray-900 dark:text-gray-100" style={{backgroundColor: dark ? '#1e293b' : '#F5F1ED'}}>
         {/* Simple Header */}
         <header className="sticky top-0 z-[100] backdrop-blur-sm bg-white/10 dark:bg-slate-900/10" style={{backgroundColor: dark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.1)'}}>
@@ -195,7 +195,7 @@ export function App(): React.ReactElement {
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
