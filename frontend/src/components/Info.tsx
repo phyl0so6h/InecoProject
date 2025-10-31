@@ -5,7 +5,7 @@ type InfoData = { culture: string; traditions: string[] }
 
 export function Info(): React.ReactElement {
     const { t } = useTranslation()
-    const apiUrl = useMemo(() => (import.meta as any).env?.VITE_API_URL || 'http://localhost:4000', [])
+    const apiUrl = useMemo(() => (import.meta as any).env?.VITE_API_URL || '/api', [])
     const [data, setData] = useState<InfoData | null>(null)
 
     useEffect(() => {
