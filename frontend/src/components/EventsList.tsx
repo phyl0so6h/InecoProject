@@ -134,7 +134,7 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
         if (pricing) params.set('pricing', pricing)
         params.set('lng', i18n.language === 'en' ? 'en' : 'hy')
         setLoading(true)
-        fetch(`${apiUrl}/events?${params.toString()}`)
+        fetch(`${apiUrl}/api/events?${params.toString()}`)
         .then(r => r.json())
         .then(d => {
             const items = Array.isArray(d.items) ? d.items : []

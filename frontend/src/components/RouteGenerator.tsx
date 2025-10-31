@@ -133,7 +133,7 @@ export function RouteGenerator(): React.ReactElement {
         const params = new URLSearchParams()
         if (region) params.set('region', getArmenianRegionName(region))
         params.set('lng', i18n.language === 'en' ? 'en' : 'hy')
-        fetch(`${apiUrl}/events?${params.toString()}`)
+        fetch(`${apiUrl}/api/events?${params.toString()}`)
             .then(r => r.json())
             .then(d => {
                 const items = Array.isArray(d.items) ? d.items : []
@@ -162,7 +162,7 @@ export function RouteGenerator(): React.ReactElement {
         
         setGenerated({ name: `${t('routes.createRoute')} ${days} ${t('routes.days')}`, days, budget, interests, stops: allStops })
 
-        fetch(`${apiUrl}/itinerary`, {
+        fetch(`${apiUrl}/api/itinerary`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -214,7 +214,7 @@ export function RouteGenerator(): React.ReactElement {
         if (!token) return
         setSaving(true)
         try {
-            const res = await fetch(`${apiUrl}/routes`, {
+            const res = await fetch(`${apiUrl}/api/routes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

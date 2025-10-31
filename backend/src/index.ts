@@ -10,25 +10,25 @@ app.use(express.json());
 type JwtUser = { id: string; role: 'tourist' | 'provider' | 'admin' };
 
 const requireEnv = (key: string): string => {
-    const value = process.env[key];
-    return value && value.length > 0 ? value : 'dev-secret';
+  const value = process.env[key];
+  return value && value.length > 0 ? value : 'dev-secret';
 };
 
 const authenticate = (req: Request, res: Response, next: NextFunction) => {
-    const header = req.headers.authorization;
-    if (!header) return res.status(401).json({ error: 'Missing Authorization header' });
-    const token = header.replace('Bearer ', '');
-    try {
+  const header = req.headers.authorization;
+  if (!header) return res.status(401).json({ error: 'Missing Authorization header' });
+  const token = header.replace('Bearer ', '');
+  try {
     if (token === 'demo') {
       (req as any).user = { id: 'u_demo', role: 'tourist' } as JwtUser;
       return next();
     }
-        const decoded = jwt.verify(token, requireEnv('JWT_SECRET')) as JwtUser;
-        (req as any).user = decoded;
-        return next();
-    } catch {
-        return res.status(401).json({ error: 'Invalid token' });
-    }
+    const decoded = jwt.verify(token, requireEnv('JWT_SECRET')) as JwtUser;
+    (req as any).user = decoded;
+    return next();
+  } catch {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
 };
 
 // In-memory user profiles and routes (mock persistence)
@@ -36,26 +36,26 @@ type SavedRoute = { id: string; name: string; days: number; budget: number; inte
 const userIdToRoutes: Record<string, SavedRoute[]> = {};
 
 app.get('/health', (_req: Request, res: Response) => {
-    res.json({ ok: true });
+  res.json({ ok: true });
 });
 
 const regions = [
-    'Երևան', 'Արագածոտն', 'Արարատ', 'Արմավիր', 'Գեղարքունիք', 'Կոտայք', 'Լոռի', 'Շիրակ', 'Սյունիք', 'Տավուշ', 'Վայոց Ձոր'
+  'Երևան', 'Արագածոտն', 'Արարատ', 'Արմավիր', 'Գեղարքունիք', 'Կոտայք', 'Լոռի', 'Շիրակ', 'Սյունիք', 'Տավուշ', 'Վայոց Ձոր'
 ];
 
 // Region to specific areas mapping
 const regionAreas: Record<string, string[]> = {
-    'Երևան': ['Կենտրոն', 'Աջափնյակ', 'Ավան', 'Նոր Նորք', 'Մալաթիա', 'Էրեբունի', 'Նուբարաշեն', 'Շենգավիթ'],
-    'Արագածոտն': ['Աշտարակ', 'Ապարան', 'Թալին', 'Արագած', 'Ուշի', 'Արուճ', 'Արտաշատ', 'Կոշ'],
-    'Արարատ': ['Արտաշատ', 'Մասիս', 'Վեդի', 'Արարատ', 'Նորավան', 'Խոր Վիրապ', 'Էջմիածին', 'Վաղարշապատ'],
-    'Արմավիր': ['Արմավիր', 'Էջմիածին', 'Վաղարշապատ', 'Մեծամոր', 'Փարաքար', 'Բագարան', 'Մուշ', 'Արագածոտն'],
-    'Գեղարքունիք': ['Գավառ', 'Սևան', 'Մարտունի', 'Վարդենիս', 'Չամբարակ', 'Սևանա լիճ', 'Նորատուս', 'Գեղարդ'],
-    'Կոտայք': ['Հրազդան', 'Աբովյան', 'Բյուրեղ', 'Չարենցավան', 'Նոր Հաճն', 'Ծաղկաձոր', 'Արզնի', 'Բջնի'],
-    'Լոռի': ['Վանաձոր', 'Ալավերդի', 'Ստեփանավան', 'Տաշիր', 'Սպիտակ', 'Մեծավան', 'Օձուն', 'Կոբայր'],
-    'Շիրակ': ['Գյումրի', 'Արթիկ', 'Մարալիկ', 'Աշոցք', 'Ամասիա', 'Արփի', 'Ջաջուռ', 'Սարատակ'],
-    'Սյունիք': ['Կապան', 'Գորիս', 'Սիսիան', 'Մեղրի', 'Տաթև', 'Շահումյան', 'Քաջարան', 'Ագարակ'],
-    'Տավուշ': ['Իջևան', 'Դիլիջան', 'Բերդ', 'Նոյեմբերյան', 'Այրում', 'Տավուշ', 'Նավուր', 'Պարավակար'],
-    'Վայոց Ձոր': ['Եղեգնաձոր', 'Վայք', 'Ջերմուկ', 'Արենի', 'Գառնի', 'Մարտունի', 'Վերին Շորժա', 'Գետափ']
+  'Երևան': ['Կենտրոն', 'Աջափնյակ', 'Ավան', 'Նոր Նորք', 'Մալաթիա', 'Էրեբունի', 'Նուբարաշեն', 'Շենգավիթ'],
+  'Արագածոտն': ['Աշտարակ', 'Ապարան', 'Թալին', 'Արագած', 'Ուշի', 'Արուճ', 'Արտաշատ', 'Կոշ'],
+  'Արարատ': ['Արտաշատ', 'Մասիս', 'Վեդի', 'Արարատ', 'Նորավան', 'Խոր Վիրապ', 'Էջմիածին', 'Վաղարշապատ'],
+  'Արմավիր': ['Արմավիր', 'Էջմիածին', 'Վաղարշապատ', 'Մեծամոր', 'Փարաքար', 'Բագարան', 'Մուշ', 'Արագածոտն'],
+  'Գեղարքունիք': ['Գավառ', 'Սևան', 'Մարտունի', 'Վարդենիս', 'Չամբարակ', 'Սևանա լիճ', 'Նորատուս', 'Գեղարդ'],
+  'Կոտայք': ['Հրազդան', 'Աբովյան', 'Բյուրեղ', 'Չարենցավան', 'Նոր Հաճն', 'Ծաղկաձոր', 'Արզնի', 'Բջնի'],
+  'Լոռի': ['Վանաձոր', 'Ալավերդի', 'Ստեփանավան', 'Տաշիր', 'Սպիտակ', 'Մեծավան', 'Օձուն', 'Կոբայր'],
+  'Շիրակ': ['Գյումրի', 'Արթիկ', 'Մարալիկ', 'Աշոցք', 'Ամասիա', 'Արփի', 'Ջաջուռ', 'Սարատակ'],
+  'Սյունիք': ['Կապան', 'Գորիս', 'Սիսիան', 'Մեղրի', 'Տաթև', 'Շահումյան', 'Քաջարան', 'Ագարակ'],
+  'Տավուշ': ['Իջևան', 'Դիլիջան', 'Բերդ', 'Նոյեմբերյան', 'Այրում', 'Տավուշ', 'Նավուր', 'Պարավակար'],
+  'Վայոց Ձոր': ['Եղեգնաձոր', 'Վայք', 'Ջերմուկ', 'Արենի', 'Գառնի', 'Մարտունի', 'Վերին Շորժա', 'Գետափ']
 };
 
 const addDays = (base: Date, days: number): string => {
@@ -65,17 +65,17 @@ const addDays = (base: Date, days: number): string => {
 };
 
 type EventItem = {
-    id: string;
-    title: string;
-    description: string;
-    region: string;
-    area: string;
-    type: string;
-    date: string;
-    startDate?: string;
-    endDate?: string;
-    budgetMin?: number;
-    budgetMax?: number;
+  id: string;
+  title: string;
+  description: string;
+  region: string;
+  area: string;
+  type: string;
+  date: string;
+  startDate?: string;
+  endDate?: string;
+  budgetMin?: number;
+  budgetMax?: number;
   imageUrl?: string;
 };
 
@@ -303,7 +303,7 @@ const areaHyToEn: Record<string, string> = {
   'Էրեբունի': 'Erebuni',
   'Նուբարաշեն': 'Nubarashen',
   'Շենգավիթ': 'Shengavit',
-  
+
   // Արագածոտն
   'Աշտարակ': 'Ashtarak',
   'Ապարան': 'Aparan',
@@ -313,7 +313,7 @@ const areaHyToEn: Record<string, string> = {
   'Արուճ': 'Aruch',
   'Արտաշատ': 'Artashat',
   'Կոշ': 'Kosh',
-  
+
   // Արարատ
   'Մասիս': 'Masis',
   'Վեդի': 'Vedi',
@@ -322,14 +322,14 @@ const areaHyToEn: Record<string, string> = {
   'Խոր Վիրապ': 'Khor Virap',
   'Էջմիածին': 'Echmiadzin',
   'Վաղարշապատ': 'Vagharshapat',
-  
+
   // Արմավիր
   'Արմավիր': 'Armavir',
   'Մեծամոր': 'Metsamor',
   'Փարաքար': 'Parakar',
   'Բագարան': 'Bagaran',
   'Մուշ': 'Mush',
-  
+
   // Գեղարքունիք
   'Գավառ': 'Gavar',
   'Սևան': 'Sevan',
@@ -339,7 +339,7 @@ const areaHyToEn: Record<string, string> = {
   'Սևանա լիճ': 'Lake Sevan',
   'Նորատուս': 'Noratus',
   'Գեղարդ': 'Geghard',
-  
+
   // Կոտայք
   'Հրազդան': 'Hrazdan',
   'Աբովյան': 'Abovyan',
@@ -349,7 +349,7 @@ const areaHyToEn: Record<string, string> = {
   'Ծաղկաձոր': 'Tsaghkadzor',
   'Արզնի': 'Arzni',
   'Բջնի': 'Bjni',
-  
+
   // Լոռի
   'Վանաձոր': 'Vanadzor',
   'Ալավերդի': 'Alaverdi',
@@ -359,7 +359,7 @@ const areaHyToEn: Record<string, string> = {
   'Մեծավան': 'Metsavan',
   'Օձուն': 'Odzun',
   'Կոբայր': 'Kobayr',
-  
+
   // Շիրակ
   'Գյումրի': 'Gyumri',
   'Արթիկ': 'Artik',
@@ -369,7 +369,7 @@ const areaHyToEn: Record<string, string> = {
   'Արփի': 'Arpi',
   'Ջաջուռ': 'Jajur',
   'Սարատակ': 'Saratak',
-  
+
   // Սյունիք
   'Կապան': 'Kapan',
   'Գորիս': 'Goris',
@@ -379,7 +379,7 @@ const areaHyToEn: Record<string, string> = {
   'Շահումյան': 'Shahumyan',
   'Քաջարան': 'Kajaran',
   'Ագարակ': 'Agarak',
-  
+
   // Տավուշ
   'Իջևան': 'Ijevan',
   'Դիլիջան': 'Dilijan',
@@ -389,7 +389,7 @@ const areaHyToEn: Record<string, string> = {
   'Տավուշ': 'Tavush',
   'Նավուր': 'Navur',
   'Պարավակար': 'Paravakar',
-  
+
   // Վայոց Ձոր
   'Եղեգնաձոր': 'Yeghegnadzor',
   'Վայք': 'Vayk',
@@ -411,13 +411,13 @@ const extraEvents: RawEvent[] = regions.flatMap((r, rIdx) => {
     const descriptionEn = `${typeHyToEn[t]} event in ${regionHyToEn[r] || r}`;
     const baseDate = addDays(new Date(), (rIdx - i) * 5);
     const duration = Math.max(1, (rIdx + i) % 4 + 1); // 1-4 days
-    
+
     // Get random area from the region
     const areas = regionAreas[r] || [r];
     const areaIndex = (rIdx + i) % areas.length;
     const areaHy = areas[areaIndex];
     const areaEn = areaHyToEn[areaHy] || areaHy;
-    
+
     return {
       id: `ev_${encodeURIComponent(r)}_${i}`,
       titleHy,
@@ -459,27 +459,27 @@ const toPublicEvent = (e: RawEvent, lng: string): EventItem & { pricing: EventPr
 });
 
 app.get('/regions', (_req: Request, res: Response) => {
-    res.json({ items: regions });
+  res.json({ items: regions });
 });
 
 // Auth mock endpoints with test users
 const loginBody = z.object({ email: z.string().email(), password: z.string().min(4) });
 app.post('/auth/login', (req: Request, res: Response) => {
-    const parsed = loginBody.safeParse(req.body);
-    if (!parsed.success) return res.status(400).json({ error: 'Invalid credentials format' });
-    const { email, password } = parsed.data;
-    let user: JwtUser | null = null;
-    if (email === 'admin@admin.com' && password === 'admin') {
-      user = { id: 'u_admin', role: 'admin' };
-    } else if (email === 'user@user.com' && password === 'user') {
-      user = { id: 'u_user', role: 'tourist' };
-    } else if (email === 'provider@provider.com' && password === 'provider') {
-      user = { id: 'u_provider', role: 'provider' };
-    } else {
-      return res.status(401).json({ error: 'Invalid email or password' });
-    }
-    const token = jwt.sign(user, requireEnv('JWT_SECRET'), { expiresIn: '7d' });
-    res.json({ token, user });
+  const parsed = loginBody.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'Invalid credentials format' });
+  const { email, password } = parsed.data;
+  let user: JwtUser | null = null;
+  if (email === 'admin@admin.com' && password === 'admin') {
+    user = { id: 'u_admin', role: 'admin' };
+  } else if (email === 'user@user.com' && password === 'user') {
+    user = { id: 'u_user', role: 'tourist' };
+  } else if (email === 'provider@provider.com' && password === 'provider') {
+    user = { id: 'u_provider', role: 'provider' };
+  } else {
+    return res.status(401).json({ error: 'Invalid email or password' });
+  }
+  const token = jwt.sign(user, requireEnv('JWT_SECRET'), { expiresIn: '7d' });
+  res.json({ token, user });
 });
 
 // Profile endpoints
@@ -519,9 +519,9 @@ app.post('/api/routes', authenticate, (req: Request, res: Response) => {
   if (!parsed.success) return res.status(400).json({ error: 'Invalid route payload' });
   const user: JwtUser = (req as any).user;
   const list = userIdToRoutes[user.id] || [];
-  const newRoute: SavedRoute = { 
-    id: `r_${Date.now()}`, 
-    ...parsed.data, 
+  const newRoute: SavedRoute = {
+    id: `r_${Date.now()}`,
+    ...parsed.data,
     createdAt: new Date().toISOString(),
     description: `Route with ${parsed.data.days} days, ${parsed.data.interests.join(', ')} interests`
   } as SavedRoute;
@@ -540,15 +540,15 @@ app.get('/api/routes/:id', authenticate, (req: Request, res: Response) => {
 
 // Events mock endpoints
 app.get('/api/events', (req: Request, res: Response) => {
-    const { region, type, pricing, lng } = req.query as { [key: string]: string | undefined };
-    const language = lng === 'en' ? 'en' : 'hy';
-    let items = sampleEventsRaw;
-    if (region && typeof region === 'string') items = items.filter(e => e.region === region);
-    if (type && typeof type === 'string') items = items.filter(e => e.type === type);
-    if (pricing === 'free') items = items.filter(e => e.pricing.isFree);
-    if (pricing === 'paid') items = items.filter(e => !e.pricing.isFree);
-    const mapped = items.map(e => toPublicEvent(e as RawEvent, language));
-    res.json({ items: mapped, total: mapped.length });
+  const { region, type, pricing, lng } = req.query as { [key: string]: string | undefined };
+  const language = lng === 'en' ? 'en' : 'hy';
+  let items = sampleEventsRaw;
+  if (region && typeof region === 'string') items = items.filter(e => e.region === region);
+  if (type && typeof type === 'string') items = items.filter(e => e.type === type);
+  if (pricing === 'free') items = items.filter(e => e.pricing.isFree);
+  if (pricing === 'paid') items = items.filter(e => !e.pricing.isFree);
+  const mapped = items.map(e => toPublicEvent(e as RawEvent, language));
+  res.json({ items: mapped, total: mapped.length });
 });
 
 app.get('/api/events/:id', (req: Request, res: Response) => {
@@ -619,19 +619,19 @@ app.post('/estimate', (req: Request, res: Response) => {
 
 // Companions mock search
 const companionsBody = z.object({
-    interests: z.array(z.string()).optional(),
-    startDate: z.string().optional(),
-    endDate: z.string().optional(),
-    regions: z.array(z.string()).optional(),
+  interests: z.array(z.string()).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  regions: z.array(z.string()).optional(),
 });
 app.post('/companions/search', (req: Request, res: Response) => {
-    const parsed = companionsBody.safeParse(req.body);
-    if (!parsed.success) return res.status(400).json({ error: 'Invalid search params' });
-    const matches = [
-        { id: 'c_1', name: 'Ani', interests: ['culture', 'food'], regions: ['Երևան'] },
-        { id: 'c_2', name: 'Aram', interests: ['hiking'], regions: ['Տավուշ'] },
-    ];
-    res.json({ items: matches });
+  const parsed = companionsBody.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'Invalid search params' });
+  const matches = [
+    { id: 'c_1', name: 'Ani', interests: ['culture', 'food'], regions: ['Երևան'] },
+    { id: 'c_2', name: 'Aram', interests: ['hiking'], regions: ['Տավուշ'] },
+  ];
+  res.json({ items: matches });
 });
 
 // Travel plans (rides to events)
@@ -744,7 +744,7 @@ app.get('/api/travel-plans', (req: Request, res: Response) => {
   let items = travelPlans;
   if (to && typeof to === 'string') items = items.filter(p => p.to === to);
   if (eventId && typeof eventId === 'string') items = items.filter(p => p.eventId === eventId);
-  
+
   // Add event title to each travel plan
   const itemsWithEventTitles = items.map(plan => {
     const event = sampleEventsRaw.find(e => e.id === plan.eventId);
@@ -754,7 +754,7 @@ app.get('/api/travel-plans', (req: Request, res: Response) => {
       eventTitle
     };
   });
-  
+
   res.json({ items: itemsWithEventTitles });
 });
 
@@ -771,18 +771,20 @@ app.post('/travel-plans/:id/join', authenticate, (req: Request, res: Response) =
 
 // Info content (static)
 app.get('/info', (_req: Request, res: Response) => {
-    res.json({
-        culture: 'Հայկական մշակույթը հարուստ է ավանդույթներով, երաժշտությամբ և խոհանոցով',
-        traditions: ['Վարդավառ', 'Տրիքնապատք'],
-    });
+  res.json({
+    culture: 'Հայկական մշակույթը հարուստ է ավանդույթներով, երաժշտությամբ և խոհանոցով',
+    traditions: ['Վարդավառ', 'Տրիքնապատք'],
+  });
 });
 
 // Partners (discounts)
 app.get('/partners', (_req: Request, res: Response) => {
-    res.json({ items: [
-        { id: 'p1', name: 'Yerevan Wine Bar', category: 'Restaurant', discount: '10%' },
-        { id: 'p2', name: 'Dilijan Hotel', category: 'Hotel', discount: '15%' },
-    ]});
+  res.json({
+    items: [
+      { id: 'p1', name: 'Yerevan Wine Bar', category: 'Restaurant', discount: '10%' },
+      { id: 'p2', name: 'Dilijan Hotel', category: 'Hotel', discount: '15%' },
+    ]
+  });
 });
 
 // Attractions data (bilingual)
@@ -1029,34 +1031,34 @@ app.get('/img', async (req: Request, res: Response) => {
 app.get('/users', authenticate, (req: Request, res: Response) => {
   const user: JwtUser = (req as any).user;
   if (user.role !== 'admin') return res.status(403).json({ error: 'Admin access required' });
-  
+
   // Mock users data
   const mockUsers = [
     { id: 'u_admin', email: 'admin@admin.com', role: 'admin' },
     { id: 'u_user', email: 'user@user.com', role: 'tourist' },
     { id: 'u_provider', email: 'provider@provider.com', role: 'provider' }
   ];
-  
+
   res.json({ items: mockUsers });
 });
 
-app.post('/events', authenticate, (req: Request, res: Response) => {
-    const user: JwtUser = (req as any).user;
-    if (user.role === 'tourist') return res.status(403).json({ error: 'Forbidden' });
-    
-    // In real implementation, save to database
-    const newEvent = {
-      id: `ev_${Date.now()}`,
-      ...req.body,
-      createdAt: new Date().toISOString()
-    };
-    
-    res.status(201).json(newEvent);
+app.post('/api/events', authenticate, (req: Request, res: Response) => {
+  const user: JwtUser = (req as any).user;
+  if (user.role === 'tourist') return res.status(403).json({ error: 'Forbidden' });
+
+  // In real implementation, save to database
+  const newEvent = {
+    id: `ev_${Date.now()}`,
+    ...req.body,
+    createdAt: new Date().toISOString()
+  };
+
+  res.status(201).json(newEvent);
 });
 
-app.post('/travel-plans', authenticate, (req: Request, res: Response) => {
+app.post('/api/travel-plans', authenticate, (req: Request, res: Response) => {
   const user: JwtUser = (req as any).user;
-  
+
   // In real implementation, save to database
   const newPlan = {
     id: `tp_${Date.now()}`,
@@ -1064,17 +1066,17 @@ app.post('/travel-plans', authenticate, (req: Request, res: Response) => {
     ...req.body,
     createdAt: new Date().toISOString()
   };
-  
+
   // Add to mock data
   travelPlans.push(newPlan);
-  
+
   res.status(201).json(newPlan);
 });
 
-app.delete('/events/:id', authenticate, (req: Request, res: Response) => {
+app.delete('/api/events/:id', authenticate, (req: Request, res: Response) => {
   const user: JwtUser = (req as any).user;
   if (user.role !== 'admin') return res.status(403).json({ error: 'Admin access required' });
-  
+
   // In real implementation, delete from database
   res.json({ success: true });
 });
@@ -1089,7 +1091,7 @@ const itineraryBody = z.object({
   passengers: z.number().int().positive().optional(),
   startRegion: z.string(),
   endRegion: z.string().optional(),
-  lng: z.enum(['hy','en']).optional(),
+  lng: z.enum(['hy', 'en']).optional(),
 });
 
 type ItineraryDay = {
@@ -1124,11 +1126,11 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
   // Interest matching with fuzzy logic
   const matchesInterests = (event: RawEvent): number => {
     if (desiredTypes.size === 0) return 1; // No preferences = perfect match
-    
+
     const eventType = event.type.toLowerCase();
     const eventTitle = (language === 'en' ? event.titleEn : event.titleHy).toLowerCase();
     const eventDesc = (language === 'en' ? event.descriptionEn : event.descriptionHy).toLowerCase();
-    
+
     let score = 0;
     for (const interest of desiredTypes) {
       if (eventType.includes(interest)) score += 3; // Type match = high score
@@ -1141,13 +1143,13 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
   // Enhanced event selection with scoring and diversity
   const selectEventForDate = (d: Date, currentRegion: string, usedEventIds: Set<string>, visitedRegions: Set<string>): RawEvent | null => {
     let candidates = sampleEventsRaw.filter(e => {
-      return isDateInRange(d, e.startDate, e.endDate) || 
-             (() => {
-               const eventDate = new Date(e.date);
-               return eventDate.getFullYear() === d.getFullYear() && 
-                      eventDate.getMonth() === d.getMonth() && 
-                      eventDate.getDate() === d.getDate();
-             })();
+      return isDateInRange(d, e.startDate, e.endDate) ||
+        (() => {
+          const eventDate = new Date(e.date);
+          return eventDate.getFullYear() === d.getFullYear() &&
+            eventDate.getMonth() === d.getMonth() &&
+            eventDate.getDate() === d.getDate();
+        })();
     });
 
     if (candidates.length === 0) return null;
@@ -1158,21 +1160,21 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
     // Score and sort candidates with diversity bonus and randomization
     const scoredCandidates = (unusedCandidates.length > 0 ? unusedCandidates : candidates).map(event => {
       let score = matchesInterests(event);
-      
+
       // Diversity bonus: prefer new regions
       if (!visitedRegions.has(event.region)) {
         score += 0.5; // Bonus for visiting new regions
       }
-      
+
       // Penalty for already used events (if we have to use them)
       if (usedEventIds.has(event.id)) {
         score -= 0.3;
       }
-      
+
       // Add randomization factor to ensure variety
       const randomFactor = Math.random() * 0.4; // 0-0.4 random boost
       score += randomFactor;
-      
+
       return {
         event,
         score,
@@ -1211,18 +1213,18 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
       'Տավուշ': ['attr_dilijan_center', 'attr_haghartsin'],
       'Վայոց Ձոր': ['attr_noravank', 'attr_areni_cave']
     };
-    
+
     const attractionIds = regionAttractionMap[region] || [];
     let regionAttractions = attractions.filter(attr => attractionIds.includes(attr.id));
 
     if (regionAttractions.length === 0) return null;
-    
+
     // Filter out already used attractions
     const unusedAttractions = regionAttractions.filter(attr => !usedAttractionIds.has(attr.id));
     if (unusedAttractions.length > 0) {
       regionAttractions = unusedAttractions;
     }
-    
+
     // Select based on interests if possible
     if (desiredTypes.size > 0) {
       const scoredAttractions = regionAttractions.map(attr => {
@@ -1233,22 +1235,22 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
           descriptionHy: attr.summaryHy,
           descriptionEn: attr.summaryEn
         } as any);
-        
+
         // Penalty for already used attractions
         if (usedAttractionIds.has(attr.id)) {
           score -= 0.3;
         }
-        
+
         // Add randomization factor to ensure variety
         const randomFactor = Math.random() * 0.4; // 0-0.4 random boost
         score += randomFactor;
-        
+
         return { attraction: attr, score };
       }).sort((a, b) => b.score - a.score);
-      
+
       return scoredAttractions[0]?.attraction || regionAttractions[0];
     }
-    
+
     // Random selection if no interests specified
     const randomIndex = Math.floor(Math.random() * regionAttractions.length);
     return regionAttractions[randomIndex];
@@ -1267,29 +1269,29 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
     const distance = distanceBetweenRegions(fromRegion, toRegion);
     const taxiPricePerKm = 180;
     const taxiTotal = distance * taxiPricePerKm;
-    
+
     // Look for available rides
     const ridePool = travelPlans.filter((p) => p.to === toRegion);
     const rideOptions = (eventId ? ridePool.filter(p => p.eventId === eventId) : ridePool)
-      .map((p) => ({ 
-        isFree: !!p.ridePricing?.isFree, 
+      .map((p) => ({
+        isFree: !!p.ridePricing?.isFree,
         pricePerSeat: p.ridePricing?.pricePerSeat ?? 0,
         planId: p.id,
         organizer: p.organizer.name,
         route: p.route
       }));
-    
+
     // Add randomization to ride selection
     const shuffledRideOptions = rideOptions.sort(() => Math.random() - 0.5);
-    
+
     const freeRide = shuffledRideOptions.find((r) => r.isFree);
     const paidRide = shuffledRideOptions.filter((r) => !r.isFree && r.pricePerSeat > 0)
       .sort((a, b) => a.pricePerSeat - b.pricePerSeat)[0];
-    
+
     if (freeRide) {
-      return { 
-        mode: 'ride_free' as const, 
-        perPerson: 0, 
+      return {
+        mode: 'ride_free' as const,
+        perPerson: 0,
         total: 0,
         description: `Free Travel Plan (${freeRide.organizer})`,
         planId: freeRide.planId,
@@ -1297,18 +1299,18 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
       };
     }
     if (paidRide) {
-      return { 
-        mode: 'ride_paid' as const, 
-        perPerson: paidRide.pricePerSeat, 
+      return {
+        mode: 'ride_paid' as const,
+        perPerson: paidRide.pricePerSeat,
         total: paidRide.pricePerSeat * passengers,
         description: `Travel Plan (${paidRide.organizer})`,
         planId: paidRide.planId,
         route: paidRide.route
       };
     }
-    return { 
-      mode: 'taxi' as const, 
-      perPerson: Math.ceil(taxiTotal / passengers), 
+    return {
+      mode: 'taxi' as const,
+      perPerson: Math.ceil(taxiTotal / passengers),
       total: taxiTotal,
       description: 'Taxi'
     };
@@ -1321,7 +1323,7 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
   const lodgingPerNightPerPerson = 10000;
   let currentRegion: string = startRegion;
   let remainingBudget = budgetPerPerson;
-  
+
   // Track used events and attractions to avoid repetition
   const usedEventIds = new Set<string>();
   const usedAttractionIds = new Set<string>();
@@ -1330,13 +1332,13 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
   for (let i = 0; i < days; i++) {
     const date = new Date(startingDate.getTime());
     date.setDate(startingDate.getDate() + i);
-    
+
     // Try to find an event first
     let raw = selectEventForDate(date, currentRegion, usedEventIds, visitedRegions);
     let eventPub = null;
     let attraction = null;
     let eventCost = 0;
-    
+
     if (raw) {
       eventPub = toPublicEvent(raw, language);
       eventCost = raw.pricing.isFree ? 0 : raw.pricing.price;
@@ -1350,41 +1352,41 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
         visitedRegions.add(currentRegion);
       }
     }
-    
+
     // Calculate transport
     const targetRegion = raw ? raw.region : currentRegion;
     const transport = estimateTransport(currentRegion, targetRegion, raw?.id);
-    
+
     // Calculate costs
     const lodgingCost = i < days - 1 ? lodgingPerNightPerPerson : 0;
     const perPerson = transport.perPerson + eventCost + lodgingCost;
     const group = transport.total + (eventCost + lodgingCost) * passengers;
-    
+
     // Check if within budget
     if (perPerson > remainingBudget && !raw?.pricing.isFree) {
       // Try to find a free event or attraction instead
-      const freeEvents = sampleEventsRaw.filter(e => 
-        e.pricing.isFree && !usedEventIds.has(e.id) && (isDateInRange(date, e.startDate, e.endDate) || 
-        (() => {
-          const eventDate = new Date(e.date);
-          return eventDate.getFullYear() === date.getFullYear() && 
-                 eventDate.getMonth() === date.getMonth() && 
-                 eventDate.getDate() === date.getDate();
-        })())
+      const freeEvents = sampleEventsRaw.filter(e =>
+        e.pricing.isFree && !usedEventIds.has(e.id) && (isDateInRange(date, e.startDate, e.endDate) ||
+          (() => {
+            const eventDate = new Date(e.date);
+            return eventDate.getFullYear() === date.getFullYear() &&
+              eventDate.getMonth() === date.getMonth() &&
+              eventDate.getDate() === date.getDate();
+          })())
       );
-      
+
       if (freeEvents.length > 0) {
         const bestFreeEvent = freeEvents.sort((a, b) => {
           let scoreA = matchesInterests(a);
           let scoreB = matchesInterests(b);
-          
+
           // Bonus for new regions
           if (!visitedRegions.has(a.region)) scoreA += 0.5;
           if (!visitedRegions.has(b.region)) scoreB += 0.5;
-          
+
           return scoreB - scoreA;
         })[0];
-        
+
         raw = bestFreeEvent;
         eventPub = toPublicEvent(raw, language);
         eventCost = 0;
@@ -1398,11 +1400,11 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
         }
       }
     }
-    
+
     totalPerPerson += perPerson;
     totalGroup += group;
     remainingBudget -= perPerson;
-    
+
     const entry: ItineraryDay = {
       day: i + 1,
       date: date.toISOString(),
@@ -1431,13 +1433,13 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
     const last = daysOut[daysOut.length - 1];
     const mergedPerPerson = last.costPerPerson + backTransport.perPerson;
     const mergedGroup = last.costGroup + backTransport.total;
-    
+
     // Add return transport to the last day without clearing the event/attraction
-    daysOut[daysOut.length - 1] = { 
-      ...last, 
+    daysOut[daysOut.length - 1] = {
+      ...last,
       // Keep the original region (event's region), don't change to finalTarget
-      costPerPerson: mergedPerPerson, 
-      costGroup: mergedGroup, 
+      costPerPerson: mergedPerPerson,
+      costGroup: mergedGroup,
       transport: {
         mode: 'return' as const,
         perPerson: backTransport.perPerson,
@@ -1448,9 +1450,9 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
   }
 
   const withinBudget = totalPerPerson <= budgetPerPerson;
-  res.json({ 
-    items: daysOut, 
-    totals: { perPerson: totalPerPerson, group: totalGroup, withinBudget }, 
+  res.json({
+    items: daysOut,
+    totals: { perPerson: totalPerPerson, group: totalGroup, withinBudget },
     startRegion,
     algorithm: 'enhanced_v2' // Indicate this is the enhanced algorithm
   });
@@ -1459,7 +1461,7 @@ app.post('/api/itinerary', (req: Request, res: Response) => {
 const port = Number(process.env.PORT || 4000);
 app.listen(port, () => {
   // eslint-disable-next-line no-console
-    console.log(`API running on :${port}`);
+  console.log(`API running on :${port}`);
 });
 
 

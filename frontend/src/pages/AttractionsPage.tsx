@@ -11,7 +11,7 @@ export function AttractionsPage(): React.ReactElement {
   const [detail, setDetail] = useState<{ id: string; title: string; summary: string; history: string; imageUrl: string } | null>(null)
 
   useEffect(() => {
-    fetch(`${apiUrl}/attractions?lng=${i18n.language === 'en' ? 'en' : 'hy'}`)
+    fetch(`${apiUrl}/api/attractions?lng=${i18n.language === 'en' ? 'en' : 'hy'}`)
       .then(r => r.json())
       .then(d => setItems(Array.isArray(d.items) ? d.items : []))
       .catch(() => setItems([]))
@@ -19,7 +19,7 @@ export function AttractionsPage(): React.ReactElement {
 
   useEffect(() => {
     if (!openId) return
-    fetch(`${apiUrl}/attractions/${openId}?lng=${i18n.language === 'en' ? 'en' : 'hy'}`)
+    fetch(`${apiUrl}/api/attractions/${openId}?lng=${i18n.language === 'en' ? 'en' : 'hy'}`)
       .then(r => r.json())
       .then(setDetail)
       .catch(() => setDetail(null))

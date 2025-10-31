@@ -33,7 +33,7 @@ export function CreateEventForm({ onSuccess, onCancel }: Props): React.ReactElem
 
     try {
       const token = localStorage.getItem('auth_token')
-      const response = await fetch(`${apiUrl}/events`, {
+      const response = await fetch(`${apiUrl}/api/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

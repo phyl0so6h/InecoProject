@@ -38,7 +38,7 @@ export function CreateRouteForm({ onSuccess, onCancel }: Props): React.ReactElem
 
     try {
       const token = localStorage.getItem('auth_token')
-      const response = await fetch(`${apiUrl}/travel-plans`, {
+      const response = await fetch(`${apiUrl}/api/travel-plans`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

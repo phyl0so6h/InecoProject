@@ -29,7 +29,7 @@ export function AdminPage(): React.ReactElement {
     const fetchData = async () => {
       try {
         const [eventsRes, usersRes] = await Promise.all([
-          fetch(`${apiUrl}/events`),
+          fetch(`${apiUrl}/api/events`),
           fetch(`${apiUrl}/users`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
@@ -60,7 +60,7 @@ export function AdminPage(): React.ReactElement {
     if (!confirm(t('admin.confirmDelete'))) return
     
     try {
-      const response = await fetch(`${apiUrl}/events/${eventId}`, {
+      const response = await fetch(`${apiUrl}/api/events/${eventId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('auth_token')}`

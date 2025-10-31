@@ -235,7 +235,7 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
         if (eventId) params.set('eventId', eventId)
         params.set('lng', i18n.language === 'en' ? 'en' : 'hy')
         setLoading(true)
-        fetch(`${apiUrl}/travel-plans?${params.toString()}`)
+        fetch(`${apiUrl}/api/travel-plans?${params.toString()}`)
         .then(r => r.json())
         .then(d => {
             const items = Array.isArray(d.items) ? d.items : []

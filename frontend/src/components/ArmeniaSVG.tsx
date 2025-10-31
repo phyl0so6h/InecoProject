@@ -66,7 +66,7 @@ export function ArmeniaSVG(): React.ReactElement {
 
   const fetchEvents = async (regionKey: string) => {
     try {
-      const res = await fetch(`${apiUrl}/events?region=${encodeURIComponent(getArmenianRegionName(regionKey))}&lng=${i18n.language === 'en' ? 'en' : 'hy'}`)
+      const res = await fetch(`${apiUrl}/api/events?region=${encodeURIComponent(getArmenianRegionName(regionKey))}&lng=${i18n.language === 'en' ? 'en' : 'hy'}`)
       const data = await res.json()
       const items = Array.isArray(data.items) ? data.items.slice(0, 3) : []
       setTooltip(t => ({ ...t, events: items.map((i: any) => ({ id: i.id, title: i.title })) }))

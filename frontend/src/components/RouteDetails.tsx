@@ -52,7 +52,7 @@ export function RouteDetails(): React.ReactElement {
     const fetchRouteDetails = async () => {
       try {
         const token = localStorage.getItem('auth_token')
-        const response = await fetch(`${apiUrl}/routes/${routeId}`, {
+        const response = await fetch(`${apiUrl}/api/routes/${routeId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -65,7 +65,7 @@ export function RouteDetails(): React.ReactElement {
           if (data) {
             setItineraryLoading(true)
             try {
-              const itineraryResponse = await fetch(`${apiUrl}/itinerary`, {
+              const itineraryResponse = await fetch(`${apiUrl}/api/itinerary`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
