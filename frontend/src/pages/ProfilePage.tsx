@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState, useMemo } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 interface UserProfile {
@@ -27,14 +27,16 @@ interface UserProfile {
 export function ProfilePage(): React.ReactElement {
   const { t } = useTranslation()
   const { section } = useParams<{ section?: string }>()
+  const navigate = useNavigate()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const apiUrl = useMemo(() => (import.meta as any).env?.VITE_API_URL || '/api', [])
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('auth_token')
-        const response = await fetch('/api/profile', {
+        const response = await fetch(`${apiUrl}/api/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -51,7 +53,7 @@ export function ProfilePage(): React.ReactElement {
     }
 
     fetchProfile()
-  }, [])
+  }, [apiUrl])
 
   if (loading) {
     return <div className="text-center py-8">{t('profile.loading')}</div>
@@ -115,7 +117,11 @@ export function ProfilePage(): React.ReactElement {
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
                 {profile.routes?.map(route => (
-                  <div key={route.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 rounded-xl hover:shadow-md transition-shadow">
+                  <div 
+                    key={route.id} 
+                    className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 rounded-xl hover:shadow-md transition-all duration-300 hover:transform hover:scale-105 hover:border-[#BC9E82] cursor-pointer"
+                    onClick={() => navigate(`/profile/routes/${route.id}`)}
+                  >
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                         <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,6 +137,12 @@ export function ProfilePage(): React.ReactElement {
                           </svg>
                           {t('profile.saved')}: {new Date(route.createdAt).toLocaleDateString()}
                         </div>
+                        <div className="mt-3 flex items-center gap-2 text-sm text-[#BC9E82] font-medium">
+                          <span>{t('profile.viewDetails')}</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -144,8 +156,8 @@ export function ProfilePage(): React.ReactElement {
         return (
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{backgroundColor: 'rgba(188, 158, 130, 0.2)'}}>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: '#BC9E82'}}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
@@ -155,9 +167,9 @@ export function ProfilePage(): React.ReactElement {
               </div>
             </div>
             {(!profile.joinedPlans || profile.joinedPlans.length === 0) ? (
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-8 rounded-xl border border-purple-200 dark:border-purple-800 text-center">
-                <div className="w-16 h-16 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-8 rounded-xl border text-center" style={{background: 'linear-gradient(to right, rgba(188, 158, 130, 0.1), rgba(143, 188, 143, 0.1))', borderColor: 'rgba(188, 158, 130, 0.3)'}}>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{backgroundColor: 'rgba(188, 158, 130, 0.3)'}}>
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: '#BC9E82'}}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
@@ -169,8 +181,8 @@ export function ProfilePage(): React.ReactElement {
                 {profile.joinedPlans?.map(plan => (
                   <div key={plan.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 rounded-xl hover:shadow-md transition-shadow">
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{backgroundColor: 'rgba(188, 158, 130, 0.2)'}}>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: '#BC9E82'}}>
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
                       </div>
@@ -298,7 +310,7 @@ export function ProfilePage(): React.ReactElement {
     <div className="max-w-6xl mx-auto">
       {/* Header Section */}
       <div className="mb-8">
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 text-white">
+        <div className="rounded-xl p-6 text-white" style={{background: 'linear-gradient(to right, #BC9E82, #8FBC8F)'}}>
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -307,7 +319,7 @@ export function ProfilePage(): React.ReactElement {
             </div>
             <div>
               <h1 className="text-2xl font-bold">{t('profile.welcome')}</h1>
-              <p className="text-purple-100">{profile.user.email}</p>
+              <p className="text-white opacity-90">{profile.user.email}</p>
               <span className="inline-block px-3 py-1 bg-white/20 rounded-full text-sm font-medium mt-2">
                 {profile.user.role === 'admin' ? t('admin.role') + ': ' + t('admin.role') : 
                  profile.user.role === 'provider' ? t('profile.provider') : t('profile.tourist')}
@@ -324,9 +336,10 @@ export function ProfilePage(): React.ReactElement {
             href="/profile"
             className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
               !section 
-                ? 'bg-white dark:bg-gray-700 text-purple-700 dark:text-purple-300 shadow-sm' 
+                ? 'bg-white dark:bg-gray-700 shadow-sm' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
             }`}
+            style={!section ? {color: '#BC9E82'} : {}}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
@@ -338,9 +351,10 @@ export function ProfilePage(): React.ReactElement {
             href="/profile/events"
             className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
               section === 'events' 
-                ? 'bg-white dark:bg-gray-700 text-purple-700 dark:text-purple-300 shadow-sm' 
+                ? 'bg-white dark:bg-gray-700 shadow-sm' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
             }`}
+            style={section === 'events' ? {color: '#BC9E82'} : {}}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -351,9 +365,10 @@ export function ProfilePage(): React.ReactElement {
             href="/profile/routes"
             className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
               section === 'routes' 
-                ? 'bg-white dark:bg-gray-700 text-purple-700 dark:text-purple-300 shadow-sm' 
+                ? 'bg-white dark:bg-gray-700 shadow-sm' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
             }`}
+            style={section === 'routes' ? {color: '#BC9E82'} : {}}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -364,9 +379,10 @@ export function ProfilePage(): React.ReactElement {
             href="/profile/joined"
             className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
               section === 'joined' 
-                ? 'bg-white dark:bg-gray-700 text-purple-700 dark:text-purple-300 shadow-sm' 
+                ? 'bg-white dark:bg-gray-700 shadow-sm' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
             }`}
+            style={section === 'joined' ? {color: '#BC9E82'} : {}}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -378,9 +394,10 @@ export function ProfilePage(): React.ReactElement {
               href="/profile/create-event"
               className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium transition-all ${
                 section === 'create-event' 
-                  ? 'bg-white dark:bg-gray-700 text-purple-700 dark:text-purple-300 shadow-sm' 
+                  ? 'bg-white dark:bg-gray-700 shadow-sm' 
                   : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
               }`}
+              style={section === 'create-event' ? {color: '#BC9E82'} : {}}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

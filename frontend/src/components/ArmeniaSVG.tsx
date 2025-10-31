@@ -24,19 +24,19 @@ const ID_TO_KEY: Record<string, string> = {
   'AM-ER': 'yerevan',
 }
 
-// Յուրաքանչյուր մարզի համար միջին վառության նարնջագույն-դեղինի գույներ
+// Յուրաքանչյուր մարզի համար կանաչ երանգների գույներ
 const REGION_COLORS: Record<string, string> = {
-  'AM-SH': '#FCD34D',
-  'AM-LO': '#FBBF24',
-  'AM-TV': '#FCD34D',
-  'AM-AG': '#F59E0B',
-  'AM-KT': '#FBBF24',
-  'AM-GR': '#FCD34D',
-  'AM-AV': '#F59E0B',
-  'AM-AR': '#FBBF24',
-  'AM-VD': '#FCD34D',
-  'AM-SU': '#F59E0B',
-  'AM-ER': '#EF4444',
+  'AM-SH': '#A8D8A8',
+  'AM-LO': '#B8E6B8',
+  'AM-TV': '#A8D8A8',
+  'AM-AG': '#C8F0C8',
+  'AM-KT': '#B8E6B8',
+  'AM-GR': '#A8D8A8',
+  'AM-AV': '#C8F0C8',
+  'AM-AR': '#B8E6B8',
+  'AM-VD': '#A8D8A8',
+  'AM-SU': '#C8F0C8',
+  'AM-ER': '#BC9E82',
 }
 
 export function ArmeniaSVG(): React.ReactElement {
@@ -131,23 +131,23 @@ export function ArmeniaSVG(): React.ReactElement {
 
   return (
     <div className="relative min-h-[380px]">
-      <div ref={containerRef} className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800 [&_path]:cursor-pointer p-4" aria-label="Armenia map" />
+      <div ref={containerRef} className="w-full [&_path]:cursor-pointer p-4" aria-label="Armenia map" />
       {tooltip.visible && (
-        <div style={{ left: tooltip.x + 12, top: tooltip.y + 12 }} className="pointer-events-none fixed z-50 min-w-[220px]">
-          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 p-3 shadow-lg">
+        <div style={{ left: tooltip.x + 12, top: tooltip.y + 12 }} className="pointer-events-none fixed z-50 min-w-[220px] opacity-100 rounded-2xl">
+          <div className="rounded-2xl p-3 bg-white/80 dark:bg-slate-900/80">
             <div className="flex items-center gap-2 mb-2">
               <div className="text-lg">📍</div>
               <div className="font-bold text-gray-900 dark:text-white">{tooltip.region}</div>
             </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+            <div className="text-xs text-gray-600 dark:text-white mb-2">
               {t('map.tooltip.nearbyEvents')}
             </div>
             <ul className="text-sm space-y-1">
               {tooltip.events.length ? tooltip.events.map(ev => (
-                <li key={ev.id} className="text-gray-700 dark:text-gray-300">
+                <li key={ev.id} className="text-gray-700 dark:text-white">
                   • {ev.title}
                 </li>
-              )) : <li className="text-gray-500 dark:text-gray-400 italic">{t('map.tooltip.noData')}</li>}
+              )) : <li className="text-gray-500 dark:text-white italic">{t('map.tooltip.noData')}</li>}
             </ul>
           </div>
         </div>

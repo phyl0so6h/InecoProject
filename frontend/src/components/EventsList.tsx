@@ -157,11 +157,11 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
                 }
                 
                 return (
-                <div key={ev.id} className="rounded-lg border p-4 grid gap-2">
+                <div key={ev.id} className="rounded-lg border p-4 grid gap-2 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-lg hover:border-[#BC9E82] bg-white dark:bg-slate-800">
                     <img
                         src={'/placeholder.svg'}
                         alt={ev.title}
-                        className="w-full h-36 object-cover rounded"
+                        className="w-full h-36 object-cover rounded transition-transform duration-300 hover:scale-110"
                     />
                     <div className="font-semibold">{ev.title}</div>
                     <div className="text-sm opacity-70">{ev.area} · {getEventDuration(ev)}</div>

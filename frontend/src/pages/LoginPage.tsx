@@ -26,7 +26,7 @@ export function LoginPage({ onSuccess }: Props): React.ReactElement {
           <Login onSuccess={async (tkn) => {
             // decode role from backend by calling /profile
             try {
-              const res = await fetch(`${apiUrl}/profile`, { headers: { Authorization: `Bearer ${tkn}` } })
+              const res = await fetch(`${apiUrl}/api/profile`, { headers: { Authorization: `Bearer ${tkn}` } })
               const data = await res.json()
               if (data?.user?.role) {
                 onSuccess(tkn, data.user.role)

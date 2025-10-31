@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Event = {
@@ -23,13 +23,14 @@ export function AdminPage(): React.ReactElement {
   const [users, setUsers] = useState<User[]>([])
   const [activeTab, setActiveTab] = useState<'events' | 'users' | 'create-event'>('events')
   const [loading, setLoading] = useState(true)
+  const apiUrl = useMemo(() => (import.meta as any).env?.VITE_API_URL || '/api', [])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [eventsRes, usersRes] = await Promise.all([
-          fetch('/api/events'),
-          fetch('/api/users', {
+          fetch(`${apiUrl}/events`),
+          fetch(`${apiUrl}/users`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
             }
@@ -53,13 +54,13 @@ export function AdminPage(): React.ReactElement {
     }
 
     fetchData()
-  }, [])
+  }, [apiUrl])
 
   const handleDeleteEvent = async (eventId: string) => {
     if (!confirm(t('admin.confirmDelete'))) return
     
     try {
-      const response = await fetch(`/api/events/${eventId}`, {
+      const response = await fetch(`${apiUrl}/events/${eventId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('auth_token')}`

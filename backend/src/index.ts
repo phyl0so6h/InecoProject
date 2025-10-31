@@ -486,7 +486,7 @@ app.post('/auth/login', (req: Request, res: Response) => {
 // Joined plans per user
 const userIdToJoinedPlans: Record<string, string[]> = {};
 
-app.get('/profile', authenticate, (req: Request, res: Response) => {
+app.get('/api/profile', authenticate, (req: Request, res: Response) => {
   const user: JwtUser = (req as any).user;
   const routes = userIdToRoutes[user.id] || [];
   const joinedPlanIds = userIdToJoinedPlans[user.id] || [];
@@ -501,7 +501,7 @@ app.get('/profile', authenticate, (req: Request, res: Response) => {
   res.json({ user, routes, joinedPlans });
 });
 
-app.get('/routes', authenticate, (req: Request, res: Response) => {
+app.get('/api/routes', authenticate, (req: Request, res: Response) => {
   const user: JwtUser = (req as any).user;
   res.json({ items: userIdToRoutes[user.id] || [] });
 });
@@ -514,7 +514,7 @@ const routeBody = z.object({
   stops: z.any(),
 });
 
-app.post('/routes', authenticate, (req: Request, res: Response) => {
+app.post('/api/routes', authenticate, (req: Request, res: Response) => {
   const parsed = routeBody.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: 'Invalid route payload' });
   const user: JwtUser = (req as any).user;
@@ -529,8 +529,17 @@ app.post('/routes', authenticate, (req: Request, res: Response) => {
   res.status(201).json(newRoute);
 });
 
+// Get specific route details
+app.get('/api/routes/:id', authenticate, (req: Request, res: Response) => {
+  const user: JwtUser = (req as any).user;
+  const routes = userIdToRoutes[user.id] || [];
+  const route = routes.find(r => r.id === req.params.id);
+  if (!route) return res.status(404).json({ error: 'Route not found' });
+  res.json(route);
+});
+
 // Events mock endpoints
-app.get('/events', (req: Request, res: Response) => {
+app.get('/api/events', (req: Request, res: Response) => {
     const { region, type, pricing, lng } = req.query as { [key: string]: string | undefined };
     const language = lng === 'en' ? 'en' : 'hy';
     let items = sampleEventsRaw;
@@ -542,7 +551,7 @@ app.get('/events', (req: Request, res: Response) => {
     res.json({ items: mapped, total: mapped.length });
 });
 
-app.get('/events/:id', (req: Request, res: Response) => {
+app.get('/api/events/:id', (req: Request, res: Response) => {
   const language = (req.query.lng === 'en') ? 'en' : 'hy';
   const ev = sampleEventsRaw.find(e => e.id === req.params.id);
   if (!ev) return res.status(404).json({ error: 'Not found' });
@@ -729,7 +738,7 @@ const travelPlans: TravelPlan[] = [
   }
 ];
 
-app.get('/travel-plans', (req: Request, res: Response) => {
+app.get('/api/travel-plans', (req: Request, res: Response) => {
   const { to, eventId, lng } = req.query;
   const language = lng === 'en' ? 'en' : 'hy';
   let items = travelPlans;
@@ -971,7 +980,7 @@ const attractions: Attraction[] = [
   }
 ];
 
-app.get('/attractions', (req: Request, res: Response) => {
+app.get('/api/attractions', (req: Request, res: Response) => {
   const lng = (req.query.lng === 'en') ? 'en' : 'hy';
   const items = attractions.map(a => ({
     id: a.id,
@@ -982,7 +991,7 @@ app.get('/attractions', (req: Request, res: Response) => {
   res.json({ items });
 });
 
-app.get('/attractions/:id', (req: Request, res: Response) => {
+app.get('/api/attractions/:id', (req: Request, res: Response) => {
   const lng = (req.query.lng === 'en') ? 'en' : 'hy';
   const a = attractions.find(x => x.id === req.params.id);
   if (!a) return res.status(404).json({ error: 'Not found' });
@@ -1095,7 +1104,7 @@ type ItineraryDay = {
 };
 
 // Enhanced itinerary generation with intelligent algorithm
-app.post('/itinerary', (req: Request, res: Response) => {
+app.post('/api/itinerary', (req: Request, res: Response) => {
   const parsed = itineraryBody.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: 'Invalid itinerary params' });
   const { startDate, days, budgetPerPerson, interests = [], passengers = 1, startRegion, endRegion, lng = 'hy' } = parsed.data;

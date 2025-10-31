@@ -228,7 +228,47 @@ export function RouteGenerator(): React.ReactElement {
                     stops: generated.stops,
                 }),
             })
-            if (!res.ok) return
+            if (res.ok) {
+                // Show success animation
+                const button = document.querySelector('[data-save-button]') as HTMLElement
+                if (button) {
+                    button.style.transform = 'scale(0.95)'
+                    button.style.backgroundColor = '#10B981'
+                    
+                    // Show success checkmark
+                    const successIcon = document.createElement('div')
+                    successIcon.innerHTML = '✓'
+                    successIcon.className = 'absolute inset-0 flex items-center justify-center text-white text-lg font-bold'
+                    button.appendChild(successIcon)
+                    
+                    // Hide text during animation
+                    const textSpan = button.querySelector('span')
+                    if (textSpan) textSpan.style.opacity = '0'
+                    
+                    setTimeout(() => {
+                        button.style.transform = 'scale(1)'
+                        button.style.backgroundColor = ''
+                        successIcon.remove()
+                        if (textSpan) textSpan.style.opacity = '1'
+                    }, 1500)
+                }
+                
+                // Clear form after animation
+                setTimeout(() => {
+                    setGenerated(null)
+                    setRegion('yerevan')
+                    setEndRegion('')
+                    setStartDate(new Date().toISOString().slice(0,10))
+                    setEvents([])
+                    setEventId('')
+                    setPassengers(2)
+                    setDays(3)
+                    setBudget(100000)
+                    setInterestsText('')
+                    setStops([])
+                    setSelectedStops([])
+                }, 2000)
+            }
         } finally {
             setSaving(false)
         }
@@ -434,7 +474,7 @@ export function RouteGenerator(): React.ReactElement {
                                     />
                                     <button 
                                         onClick={addStop} 
-                                        className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                        className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors btt"
                                     >
                                         {t('routes.add')}
                                     </button>
@@ -466,7 +506,7 @@ export function RouteGenerator(): React.ReactElement {
             <div className="flex flex-wrap gap-3 justify-center">
                 <button 
                     onClick={generate}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium btt"
                 >
                     {t('routes.generate')}
                 </button>
@@ -487,16 +527,24 @@ export function RouteGenerator(): React.ReactElement {
                         setEventId(''); 
                         setShowOptional(false);
                     }}
-                    className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+                    className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium btt"
                 >
                     {t('routes.clear')}
                 </button>
                 <button 
                     onClick={save} 
                     disabled={!generated || saving || !localStorage.getItem('auth_token')}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 font-medium btt relative overflow-hidden"
+                    data-save-button
                 >
-                    {saving ? t('routes.saving') : t('routes.save')}
+                    {saving && (
+                        <div className="absolute inset-0 bg-green-700 flex items-center justify-center">
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    )}
+                    <span className={saving ? 'opacity-0' : 'opacity-100'}>
+                        {saving ? t('routes.saving') : t('routes.save')}
+                    </span>
                 </button>
             </div>
 

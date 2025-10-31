@@ -39,7 +39,10 @@ export function Login({ onSuccess }: Props): React.ReactElement {
             <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                 <input 
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500" 
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+                    style={{outline: 'none'}}
+                    onFocus={(e) => {e.target.style.borderColor = '#BC9E82'; e.target.style.boxShadow = '0 0 0 1px #BC9E82'}}
+                    onBlur={(e) => {e.target.style.borderColor = ''; e.target.style.boxShadow = ''}} 
                     value={email} 
                     onChange={e => setEmail(e.target.value)} 
                     placeholder="demo@user.am" 
@@ -50,7 +53,10 @@ export function Login({ onSuccess }: Props): React.ReactElement {
             <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
                 <input 
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500" 
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+                    style={{outline: 'none'}}
+                    onFocus={(e) => {e.target.style.borderColor = '#BC9E82'; e.target.style.boxShadow = '0 0 0 1px #BC9E82'}}
+                    onBlur={(e) => {e.target.style.borderColor = ''; e.target.style.boxShadow = ''}} 
                     type="password" 
                     value={password} 
                     onChange={e => setPassword(e.target.value)} 
@@ -68,7 +74,10 @@ export function Login({ onSuccess }: Props): React.ReactElement {
 
             {/* Login Button */}
             <button 
-                className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors" 
+                className="w-full px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+                style={{backgroundColor: '#BC9E82'}}
+                onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
+                onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#BC9E82'} 
                 onClick={submit}
                 disabled={loading}
             >

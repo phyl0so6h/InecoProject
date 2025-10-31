@@ -30,8 +30,8 @@ export function AttractionsPage(): React.ReactElement {
       <h1 className="text-2xl font-bold">{t('attractions.title')}</h1>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {items.map(a => (
-          <button key={a.id} className="text-left border rounded-lg overflow-hidden bg-white dark:bg-neutral-900" onClick={() => setOpenId(a.id)}>
-            <img src={a.imageUrl || '/placeholder.svg'} alt={a.title} className="w-full h-40 object-cover" onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/placeholder.svg' }} />
+          <button key={a.id} className="text-left border rounded-lg overflow-hidden bg-white dark:bg-neutral-900 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-lg hover:border-[#BC9E82]" onClick={() => setOpenId(a.id)}>
+            <img src={a.imageUrl || '/placeholder.svg'} alt={a.title} className="w-full h-40 object-cover transition-transform duration-300 hover:scale-110" onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/placeholder.svg' }} />
             <div className="p-3">
               <div className="font-semibold">{a.title}</div>
               <div className="text-sm opacity-80">{a.summary}</div>

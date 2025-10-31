@@ -307,7 +307,7 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                                 {plan.ridePricing?.isFree ? (
                                     <span className="text-green-600 dark:text-green-400">{t('pricing.free')}</span>
                                 ) : (
-                                    <span className="text-purple-600 dark:text-purple-400">{plan.ridePricing?.pricePerSeat.toLocaleString()} AMD</span>
+                                    <span style={{color: '#BC9E82'}}>{plan.ridePricing?.pricePerSeat.toLocaleString()} AMD</span>
                                 )}
                             </div>
                         </div>
@@ -319,7 +319,10 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                                 {selectedPlan === plan.id ? t('travel.hideDetails') : t('travel.details')}
                             </button>
                             <button 
-                                className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="px-3 py-2 text-white text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                style={{backgroundColor: '#BC9E82'}}
+                                onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
+                                onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#BC9E82'}
                                 disabled={plan.seats <= 0 || status.status === 'past' || joining === plan.id}
                                 onClick={() => join(plan.id)}
                             >
@@ -352,11 +355,11 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                     <div className="absolute inset-0 flex items-center justify-center p-4">
                         <div className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-lg shadow-xl overflow-hidden">
                             {/* Modal Header */}
-                            <div className="bg-purple-600 p-4 text-white">
+                            <div className="p-4 text-white" style={{backgroundColor: '#BC9E82'}}>
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h2 className="font-bold text-xl mb-1">{plan.eventTitle}</h2>
-                                        <div className="text-purple-100 text-sm">
+                                        <div className="text-white opacity-90 text-sm">
                                             🚗 {getTranslatedRegionName(plan.from)} → {getTranslatedRegionName(plan.to)}
                                         </div>
                                     </div>
@@ -407,7 +410,7 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                                     <div className="space-y-2">
                                         {details.routeTimes.map((stop: any, index: number) => (
                                             <div key={index} className="flex items-start gap-3">
-                                                <div className="w-3 h-3 bg-purple-600 rounded-full flex-shrink-0 mt-1"></div>
+                                                <div className="w-3 h-3 rounded-full flex-shrink-0 mt-1" style={{backgroundColor: '#BC9E82'}}></div>
                                                 <div className="flex-1">
                                                     <div className="font-bold text-gray-900 dark:text-white">{getTranslatedRegionName(stop.stop)}</div>
                                                     <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -428,7 +431,10 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                                 {/* Footer */}
                                 <div className="flex justify-end pt-3 border-t border-gray-200 dark:border-gray-700">
                                     <button
-                                        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors"
+                                        className="px-4 py-2 text-white rounded transition-colors"
+                                        style={{backgroundColor: '#BC9E82'}}
+                                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
+                                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#BC9E82'}
                                         onClick={() => setSelectedPlan(null)}
                                     >
                                         {t('travel.close')}

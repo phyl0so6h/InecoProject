@@ -1,0 +1,39 @@
+services:
+  # Backend API Service
+  - type: web
+    name: ineco-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run prisma:generate && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ineco-db
+          property: connectionString
+    healthCheckPath: /health
+
+  # Frontend Static Site
+  - type: web
+    name: ineco-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    # Note: Set VITE_API_URL manually in Render dashboard after backend is deployed
+    # It should be: https://ineco-backend.onrender.com
+
+databases:
+  # PostgreSQL Database
+  - name: ineco-db
+    plan: free
+    databaseName: ineco
+    user: ineco_user

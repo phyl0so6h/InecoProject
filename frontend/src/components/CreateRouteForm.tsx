@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 
 type RouteFormData = {
   name: string
@@ -30,6 +30,7 @@ export function CreateRouteForm({ onSuccess, onCancel }: Props): React.ReactElem
 
   const [loading, setLoading] = useState(false)
   const [newStop, setNewStop] = useState('')
+  const apiUrl = useMemo(() => (import.meta as any).env?.VITE_API_URL || '/api', [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,7 +38,7 @@ export function CreateRouteForm({ onSuccess, onCancel }: Props): React.ReactElem
 
     try {
       const token = localStorage.getItem('auth_token')
-      const response = await fetch('/api/travel-plans', {
+      const response = await fetch(`${apiUrl}/travel-plans`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

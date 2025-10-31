@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 
 type EventFormData = {
   title: string
@@ -25,6 +25,7 @@ export function CreateEventForm({ onSuccess, onCancel }: Props): React.ReactElem
   })
 
   const [loading, setLoading] = useState(false)
+  const apiUrl = useMemo(() => (import.meta as any).env?.VITE_API_URL || '/api', [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +33,7 @@ export function CreateEventForm({ onSuccess, onCancel }: Props): React.ReactElem
 
     try {
       const token = localStorage.getItem('auth_token')
-      const response = await fetch('/api/events', {
+      const response = await fetch(`${apiUrl}/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

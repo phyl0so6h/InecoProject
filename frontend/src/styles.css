@@ -33,7 +33,7 @@
 
 /* Simple Gradient Text */
 .gradient-text {
-    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    background: linear-gradient(135deg, #BC9E82 0%, #8FBC8F 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -51,13 +51,13 @@
 
 /* Simple Button */
 .btn-primary {
-    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    background: linear-gradient(135deg, #BC9E82 0%, #8FBC8F 100%);
     transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 12px rgba(188, 158, 130, 0.4);
 }
 
 /* Scrollbar */
@@ -74,17 +74,123 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #8b5cf6;
+    background: #BC9E82;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #7c3aed;
+    background: #A68B5B;
 }
 
 /* Selection */
 ::selection {
-    background: rgba(139, 92, 246, 0.2);
+    background: rgba(188, 158, 130, 0.2);
+}
+
+/* Clean Background - No Symbols */
+.armenian-carpet-bg {
+    background: #F5F1ED;
+}
+
+.dark .armenian-carpet-bg {
+    background: #1e293b;
+}
+
+/* Dark theme background for main container */
+.dark {
+    background-color: #1e293b;
+}
+
+.dark .min-h-screen {
+    background-color: #1e293b !important;
+}
+
+/* Card Background Opacity Effects - White with Opacity */
+.card-hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease;
+}
+
+.dark .card-hover {
+    background-color: rgba(51, 65, 85, 0.8);
+}
+
+.card-hover:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+}
+
+.dark .card-hover:hover {
+    background-color: rgba(51, 65, 85, 0.9);
+}
+
+/* Section Background Opacity - Enhanced
+section {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+.dark section {
+    background-color: rgba(51, 65, 85, 0.75);
+} */
+
+/* Header Background Opacity - Enhanced */
+header {
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.dark header {
+    background-color: rgba(51, 65, 85, 0.85);
+}
+
+/* Additional Elements Opacity */
+.bg-white {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.dark .bg-white {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+.bg-slate-800 {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+.dark .bg-slate-800 {
+    background-color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.bg-slate-900 {
+    background-color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.dark .bg-slate-900 {
+    background-color: rgba(2, 6, 23, 0.8) !important;
+}
+
+/* Modal and Overlay Opacity */
+.fixed {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.btt {
+    background-color: #BC9E82;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btt:hover {
+    background-color: #c5996f !important;
+}
+/* Input Opacity */
+input, textarea, select {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.dark input, .dark textarea, .dark select {
+    background-color: rgba(30, 41, 59, 0.9) !important;
 }
 
 

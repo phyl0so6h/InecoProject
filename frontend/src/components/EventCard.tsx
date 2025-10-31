@@ -29,7 +29,7 @@ export function EventCard({ id, title, region, date, description, imageUrl, onOp
             className="w-full h-full object-cover" 
           />
         ) : (
-          <div className="w-full h-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-4xl">
+          <div className="w-full h-full flex items-center justify-center text-4xl" style={{backgroundColor: 'rgba(188, 158, 130, 0.2)'}}>
             🎭
           </div>
         )}
@@ -56,7 +56,10 @@ export function EventCard({ id, title, region, date, description, imageUrl, onOp
         
         <button 
           onClick={() => onOpen(id)}
-          className="w-full mt-3 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium transition-colors"
+          className="w-full mt-3 px-4 py-2 rounded-lg text-white font-medium transition-colors"
+          style={{backgroundColor: '#BC9E82'}}
+          onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
+          onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#BC9E82'}
         >
                  {t('routes.details')}
         </button>

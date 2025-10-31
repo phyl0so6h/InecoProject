@@ -49,7 +49,10 @@ export function EventsPage(): React.ReactElement {
             <select 
               value={filters.region}
               onChange={(e) => handleFilterChange('region', e.target.value)}
-              className="w-full h-12 px-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              className="w-full h-12 px-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+              style={{outline: 'none'}}
+              onFocus={(e) => {e.target.style.borderColor = '#BC9E82'; e.target.style.boxShadow = '0 0 0 1px #BC9E82'}}
+              onBlur={(e) => {e.target.style.borderColor = ''; e.target.style.boxShadow = ''}}
             >
               <option value="">{t('events.filters.region')}</option>
               <option value="yerevan">{t('regions.yerevan')}</option>
@@ -70,7 +73,10 @@ export function EventsPage(): React.ReactElement {
             <select 
               value={filters.type}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="w-full h-12 px-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              className="w-full h-12 px-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+              style={{outline: 'none'}}
+              onFocus={(e) => {e.target.style.borderColor = '#BC9E82'; e.target.style.boxShadow = '0 0 0 1px #BC9E82'}}
+              onBlur={(e) => {e.target.style.borderColor = ''; e.target.style.boxShadow = ''}}
             >
               <option value="">{t('events.filters.type_all')}</option>
               <option value="Festival">Փառատոն</option>
@@ -87,7 +93,10 @@ export function EventsPage(): React.ReactElement {
             <select 
               value={filters.pricing}
               onChange={(e) => handleFilterChange('pricing', e.target.value)}
-              className="w-full h-12 px-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              className="w-full h-12 px-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+              style={{outline: 'none'}}
+              onFocus={(e) => {e.target.style.borderColor = '#BC9E82'; e.target.style.boxShadow = '0 0 0 1px #BC9E82'}}
+              onBlur={(e) => {e.target.style.borderColor = ''; e.target.style.boxShadow = ''}}
             >
               <option value="">{t('events.filters.pricing_all')}</option>
               <option value="free">{t('events.filters.pricing_free')}</option>
@@ -101,7 +110,10 @@ export function EventsPage(): React.ReactElement {
               type="date"
               value={filters.date}
               onChange={(e) => handleFilterChange('date', e.target.value)}
-              className="w-full h-12 px-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              className="w-full h-12 px-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
+              style={{outline: 'none'}}
+              onFocus={(e) => {e.target.style.borderColor = '#BC9E82'; e.target.style.boxShadow = '0 0 0 1px #BC9E82'}}
+              onBlur={(e) => {e.target.style.borderColor = ''; e.target.style.boxShadow = ''}}
             />
           </div>
         </div>
