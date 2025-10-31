@@ -28,18 +28,28 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node
-      if (buttonRef.current && !buttonRef.current.contains(target)) {
-        // Check if click is on dropdown content
-        const dropdown = document.querySelector('[data-dropdown="user-account"]')
-        if (!dropdown || !dropdown.contains(target)) {
-          setIsOpen(false)
-        }
+      const dropdown = document.querySelector('[data-dropdown="user-account"]')
+      
+      // Check if click is outside both button and dropdown
+      if (
+        buttonRef.current && 
+        !buttonRef.current.contains(target) &&
+        (!dropdown || !dropdown.contains(target))
+      ) {
+        setIsOpen(false)
       }
     }
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
+      // Use setTimeout to avoid immediate closure on button click
+      const timeoutId = setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside, true)
+      }, 0)
+      
+      return () => {
+        clearTimeout(timeoutId)
+        document.removeEventListener('mousedown', handleClickOutside, true)
+      }
     }
   }, [isOpen])
 
@@ -51,6 +61,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
         top: position.top,
         left: position.left
       }}
+      onClick={(e) => e.stopPropagation()}
     >
       <div className="p-3 space-y-1">
         <Link
@@ -148,7 +159,10 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
     <div className="relative">
       <button
         ref={buttonRef}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.stopPropagation()
+          setIsOpen(!isOpen)
+        }}
         className="flex items-center gap-2 px-3 py-1 rounded-md text-white transition-colors"
         style={{backgroundColor: '#BC9E82'}}
         onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
