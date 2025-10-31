@@ -21,6 +21,7 @@ export function App(): React.ReactElement {
     return saved ? JSON.parse(saved) : false
   })
   const [auth, setAuth] = useState<{token:string; role:'tourist'|'provider'|'admin'} | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   
   useEffect(() => {
     const root = document.documentElement
@@ -57,14 +58,14 @@ export function App(): React.ReactElement {
         <header className="sticky top-0 z-[100] backdrop-blur-sm bg-white/10 dark:bg-slate-900/10" style={{backgroundColor: dark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.1)'}}>
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 py-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to="/" className="flex items-center gap-2 group" onClick={() => setMobileMenuOpen(false)}>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm group-hover:scale-105 transition-transform" style={{backgroundColor: '#BC9E82'}}>
                 🇦🇲
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white hidden md:block">{t('app.name')}</span>
             </Link>
 
-            {/* Navigation */}
+            {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center whitespace-nowrap">
               <NavLink 
                 to="/events" 
@@ -100,7 +101,7 @@ export function App(): React.ReactElement {
                 {t('nav.attractions', 'Attractions')}
               </NavLink>
               <NavLink 
-                to="/travel-plans" 
+                to="/travel-plans"
                 className={({isActive}) => `px-6 py-2 rounded-md font-medium transition-colors ${
                   isActive 
                     ? 'text-white' 
@@ -138,10 +139,10 @@ export function App(): React.ReactElement {
 
             {/* Right Actions */}
             <div className="flex items-center gap-2">
-              {/* Language Toggle */}
+              {/* Language Toggle - Hidden on mobile */}
               <button 
                 onClick={() => { const next = i18n.language === 'hy' ? 'en' : 'hy'; i18n.changeLanguage(next); try { localStorage.setItem('lng', next) } catch {} }} 
-                className="px-3 py-1 rounded-md text-white text-sm font-medium transition-colors"
+                className="hidden sm:block px-3 py-1 rounded-md text-white text-sm font-medium transition-colors"
                 style={{backgroundColor: '#BC9E82'}}
                 onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
                 onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#BC9E82'}
@@ -149,10 +150,10 @@ export function App(): React.ReactElement {
                 {i18n.language === 'hy' ? 'EN' : 'HY'}
               </button>
               
-              {/* Theme Toggle */}
+              {/* Theme Toggle - Hidden on mobile */}
               <button 
                 onClick={() => setDark(d => !d)} 
-                className="px-3 py-1 rounded-md text-white transition-colors"
+                className="hidden sm:block px-3 py-1 rounded-md text-white transition-colors"
                 style={{backgroundColor: '#BC9E82'}}
                 onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
                 onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#BC9E82'}
@@ -160,13 +161,15 @@ export function App(): React.ReactElement {
                 {dark ? '☀️' : '🌙'}
               </button>
 
-              {/* Auth */}
+              {/* Auth - Desktop */}
               {auth ? (
-                <UserAccount userRole={auth.role} onLogout={handleLogout} />
+                <div className="hidden sm:block">
+                  <UserAccount userRole={auth.role} onLogout={handleLogout} />
+                </div>
               ) : (
                 <NavLink 
                   to="/login" 
-                  className="px-4 py-2 rounded-md text-white font-medium transition-colors"
+                  className="hidden sm:block px-4 py-2 rounded-md text-white font-medium transition-colors"
                   style={{backgroundColor: '#BC9E82'}}
                   onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#A68B5B'}
                   onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#BC9E82'}
@@ -174,8 +177,139 @@ export function App(): React.ReactElement {
                   {t('nav.login')}
                 </NavLink>
               )}
+
+              {/* Mobile Menu Toggle */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2 rounded-md text-white transition-colors"
+                style={{backgroundColor: '#BC9E82'}}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="lg:hidden border-t border-gray-200/20 dark:border-gray-700/20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm">
+              <nav className="flex flex-col px-4 py-4 gap-2">
+                <NavLink 
+                  to="/events" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({isActive}) => `px-4 py-3 rounded-md font-medium transition-colors ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                  style={({isActive}) => isActive ? {backgroundColor: '#BC9E82'} : {}}
+                >
+                  {t('nav.events')}
+                </NavLink>
+                <NavLink 
+                  to="/routes" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({isActive}) => `px-4 py-3 rounded-md font-medium transition-colors ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                  style={({isActive}) => isActive ? {backgroundColor: '#BC9E82'} : {}}
+                >
+                  {t('nav.routes')}
+                </NavLink>
+                <NavLink 
+                  to="/attractions" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({isActive}) => `px-4 py-3 rounded-md font-medium transition-colors ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                  style={({isActive}) => isActive ? {backgroundColor: '#BC9E82'} : {}}
+                >
+                  {t('nav.attractions', 'Attractions')}
+                </NavLink>
+                <NavLink 
+                  to="/travel-plans"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({isActive}) => `px-4 py-3 rounded-md font-medium transition-colors ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                  style={({isActive}) => isActive ? {backgroundColor: '#BC9E82'} : {}}
+                >
+                  {t('nav.travelPlans')}
+                </NavLink>
+                <NavLink 
+                  to="/info" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({isActive}) => `px-4 py-3 rounded-md font-medium transition-colors ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                  style={({isActive}) => isActive ? {backgroundColor: '#BC9E82'} : {}}
+                >
+                  {t('nav.info')}
+                </NavLink>
+                {auth?.role === 'admin' && (
+                  <NavLink 
+                    to="/admin" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={({isActive}) => `px-4 py-3 rounded-md font-medium transition-colors ${
+                      isActive 
+                        ? 'text-white' 
+                        : 'text-gray-700 dark:text-gray-300'
+                    }`}
+                    style={({isActive}) => isActive ? {backgroundColor: '#BC9E82'} : {}}
+                  >
+                    {t('nav.admin')}
+                  </NavLink>
+                )}
+                <div className="border-t border-gray-200/20 dark:border-gray-700/20 my-2"></div>
+                <div className="flex items-center gap-2 px-4 py-2">
+                  <button 
+                    onClick={() => { const next = i18n.language === 'hy' ? 'en' : 'hy'; i18n.changeLanguage(next); try { localStorage.setItem('lng', next) } catch {} }} 
+                    className="px-3 py-1 rounded-md text-white text-sm font-medium transition-colors"
+                    style={{backgroundColor: '#BC9E82'}}
+                  >
+                    {i18n.language === 'hy' ? 'EN' : 'HY'}
+                  </button>
+                  <button 
+                    onClick={() => setDark(d => !d)} 
+                    className="px-3 py-1 rounded-md text-white transition-colors"
+                    style={{backgroundColor: '#BC9E82'}}
+                  >
+                    {dark ? '☀️' : '🌙'}
+                  </button>
+                  {auth ? (
+                    <div className="flex-1">
+                      <UserAccount userRole={auth.role} onLogout={handleLogout} />
+                    </div>
+                  ) : (
+                    <NavLink 
+                      to="/login" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-4 py-2 rounded-md text-white font-medium transition-colors flex-1 text-center"
+                      style={{backgroundColor: '#BC9E82'}}
+                    >
+                      {t('nav.login')}
+                    </NavLink>
+                  )}
+                </div>
+              </nav>
+            </div>
+          )}
         </header>
 
         {/* Main Content */}
