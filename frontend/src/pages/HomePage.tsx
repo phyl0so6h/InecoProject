@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { ArmeniaSVG } from '../components/ArmeniaSVG'
 import { motion } from 'framer-motion'
 
@@ -23,21 +24,21 @@ export function HomePage(): React.ReactElement {
             {t('home.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <a 
-              href="/events"
+            <Link 
+              to="/events"
               className="px-6 py-3 bg-white rounded-lg font-semibold hover:bg-gray-50 transition-colors text-center"
               style={{color: '#BC9E82'}}
             >
               {t('home.cta.events')}
-            </a>
-            <a 
-              href="/routes"
+            </Link>
+            <Link 
+              to="/routes"
               className="px-6 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white transition-colors text-center"
               onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#BC9E82'}
               onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'white'}
             >
               {t('home.cta.routes')}
-            </a>
+            </Link>
           </div>
         </div>
       </motion.section>

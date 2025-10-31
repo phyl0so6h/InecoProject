@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 
@@ -10,6 +10,7 @@ type Props = {
 
 export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [position, setPosition] = useState({ top: 0, left: 0 })
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -58,7 +59,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           onClick={(e) => {
             e.preventDefault()
             setIsOpen(false)
-            window.location.href = '/profile'
+            navigate('/profile')
           }}
         >
           <svg className="w-4 h-4 text-[#BC9E82]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +73,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           onClick={(e) => {
             e.preventDefault()
             setIsOpen(false)
-            window.location.href = '/profile/events'
+            navigate('/profile/events')
           }}
         >
           <svg className="w-4 h-4 text-[#BC9E82]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,7 +87,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           onClick={(e) => {
             e.preventDefault()
             setIsOpen(false)
-            window.location.href = '/profile/routes'
+            navigate('/profile/routes')
           }}
         >
           <svg className="w-4 h-4 text-[#BC9E82]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +101,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           onClick={(e) => {
             e.preventDefault()
             setIsOpen(false)
-            window.location.href = '/profile/joined'
+            navigate('/profile/joined')
           }}
         >
           <svg className="w-4 h-4 text-[#BC9E82]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +116,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
             onClick={(e) => {
               e.preventDefault()
               setIsOpen(false)
-              window.location.href = '/profile/create-event'
+              navigate('/profile/create-event')
             }}
           >
             <svg className="w-4 h-4 text-[#BC9E82]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
