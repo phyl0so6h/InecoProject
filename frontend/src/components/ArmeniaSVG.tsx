@@ -92,24 +92,35 @@ export function ArmeniaSVG(): React.ReactElement {
       const isMobile = window.innerWidth <= 768
       const isSmallMobile = window.innerWidth <= 480
       if (svg && containerRef.current) {
-        // Ստանալ SVG-ի բուն չափը
-        const svgRect = svg.getBBox()
-        const svgWidth = svgRect.width
-        const svgHeight = svgRect.height
-        
-        if (isSmallMobile) {
-          // Փոքր mobile-ի համար ավելի ագրեսիվ scale
-          const scale = Math.min(0.5, (containerWidth * 0.95) / svgWidth)
-          svg.style.transform = `scale(${scale})`
-          svg.style.transformOrigin = 'center center'
-        } else if (isMobile) {
-          // Tablet-ի համար
-          const scale = Math.min(0.6, (containerWidth * 0.95) / svgWidth)
-          svg.style.transform = `scale(${scale})`
-          svg.style.transformOrigin = 'center center'
-        }
-        svg.style.maxWidth = '100%'
-        svg.style.width = '100%'
+        // Սպասել, որ SVG-ը լիովին load լինի
+        setTimeout(() => {
+          try {
+            // Ստանալ SVG-ի բուն չափը
+            const svgRect = svg.getBBox()
+            const svgWidth = svgRect.width || svg.clientWidth || 800
+            const svgHeight = svgRect.height || svg.clientHeight || 600
+            
+            // Container-ի available width (padding-ներից հետո)
+            const availableWidth = containerWidth - 16 // 8px padding on each side
+            
+            if (isSmallMobile || isMobile) {
+              // Հաշվարկել scale-ը, որպեսզի ամբողջ քարտեզը տեղավորվի
+              const widthScale = availableWidth / svgWidth
+              const scale = Math.min(widthScale * 0.98, isSmallMobile ? 0.45 : 0.55) // 2% margin for safety
+              
+              svg.style.transform = `scale(${scale})`
+              svg.style.transformOrigin = 'center center'
+              svg.style.maxWidth = `${svgWidth * scale}px`
+              svg.style.width = `${svgWidth * scale}px`
+              svg.style.height = `${svgHeight * scale}px`
+            }
+          } catch (e) {
+            // Fallback
+            const scale = isSmallMobile ? 0.45 : 0.55
+            svg.style.transform = `scale(${scale})`
+            svg.style.transformOrigin = 'center center'
+          }
+        }, 150)
       }
       
       Object.entries(ID_TO_KEY).forEach(([id, key]) => {
@@ -184,27 +195,31 @@ export function ArmeniaSVG(): React.ReactElement {
           if (isSmallMobile || isMobile) {
             try {
               const svgRect = svg.getBBox()
-              const svgWidth = svgRect.width || svg.clientWidth
+              const svgWidth = svgRect.width || svg.clientWidth || 800
+              const svgHeight = svgRect.height || svg.clientHeight || 600
+              const availableWidth = containerWidth - 16 // padding margin
+              
               if (svgWidth > 0) {
-                const maxScale = isSmallMobile ? 0.5 : 0.6
-                const scale = Math.min(maxScale, (containerWidth * 0.95) / svgWidth)
+                const widthScale = availableWidth / svgWidth
+                const maxScale = isSmallMobile ? 0.45 : 0.55
+                const scale = Math.min(widthScale * 0.98, maxScale)
+                
                 svg.style.transform = `scale(${scale})`
                 svg.style.transformOrigin = 'center center'
-                svg.style.maxWidth = '100%'
-                svg.style.width = '100%'
+                svg.style.maxWidth = `${svgWidth * scale}px`
+                svg.style.width = `${svgWidth * scale}px`
+                svg.style.height = `${svgHeight * scale}px`
               }
             } catch (e) {
               // Fallback if getBBox fails
-              const scale = isSmallMobile ? 0.5 : 0.6
+              const scale = isSmallMobile ? 0.45 : 0.55
               svg.style.transform = `scale(${scale})`
               svg.style.transformOrigin = 'center center'
-              svg.style.maxWidth = '100%'
-              svg.style.width = '100%'
             }
           }
         }
       }
-    }, 100)
+    }, 200)
     
     // Handle window resize
     const handleResize = () => {
@@ -216,20 +231,36 @@ export function ArmeniaSVG(): React.ReactElement {
           const isSmallMobile = window.innerWidth <= 480
           
           if (isSmallMobile || isMobile) {
-            // Ստանալ SVG-ի բուն չափը
-            const svgRect = svg.getBBox()
-            const svgWidth = svgRect.width
-            const maxScale = isSmallMobile ? 0.5 : 0.6
-            const scale = Math.min(maxScale, (containerWidth * 0.95) / svgWidth)
-            svg.style.transform = `scale(${scale})`
-            svg.style.transformOrigin = 'center center'
-            svg.style.maxWidth = '100%'
-            svg.style.width = '100%'
+            try {
+              // Ստանալ SVG-ի բուն չափը
+              const svgRect = svg.getBBox()
+              const svgWidth = svgRect.width || svg.clientWidth || 800
+              const svgHeight = svgRect.height || svg.clientHeight || 600
+              const availableWidth = containerWidth - 16 // padding margin
+              
+              if (svgWidth > 0) {
+                const widthScale = availableWidth / svgWidth
+                const maxScale = isSmallMobile ? 0.45 : 0.55
+                const scale = Math.min(widthScale * 0.98, maxScale)
+                
+                svg.style.transform = `scale(${scale})`
+                svg.style.transformOrigin = 'center center'
+                svg.style.maxWidth = `${svgWidth * scale}px`
+                svg.style.width = `${svgWidth * scale}px`
+                svg.style.height = `${svgHeight * scale}px`
+              }
+            } catch (e) {
+              // Fallback
+              const scale = isSmallMobile ? 0.45 : 0.55
+              svg.style.transform = `scale(${scale})`
+              svg.style.transformOrigin = 'center center'
+            }
           } else {
             svg.style.transform = ''
             svg.style.transformOrigin = ''
             svg.style.maxWidth = ''
             svg.style.width = ''
+            svg.style.height = ''
           }
         }
       }
@@ -243,7 +274,7 @@ export function ArmeniaSVG(): React.ReactElement {
   }, [navigate, i18n.language, t])
 
   return (
-    <div className="relative min-h-[200px] md:min-h-[380px] w-full" style={{ overflow: 'hidden' }}>
+    <div className="relative min-h-[200px] md:min-h-[380px] w-full" style={{ overflow: 'hidden', maxWidth: '100%' }}>
       <div 
         ref={containerRef} 
         className="w-full [&_path]:cursor-pointer p-0 md:p-4" 
@@ -252,7 +283,10 @@ export function ArmeniaSVG(): React.ReactElement {
           touchAction: 'pan-x pan-y pinch-zoom',
           overflow: 'hidden',
           width: '100%',
-          maxWidth: '100%'
+          maxWidth: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
         }}
       />
       <style>{`
@@ -261,18 +295,21 @@ export function ArmeniaSVG(): React.ReactElement {
             overflow-x: hidden !important;
             overflow-y: hidden !important;
             width: 100% !important;
-            max-width: 100vw !important;
-            height: 300px;
+            max-width: 100% !important;
+            height: 300px !important;
             touch-action: pan-x pan-y pinch-zoom;
-            padding: 0 !important;
+            padding: 8px !important;
             box-sizing: border-box;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
           }
           [aria-label="Armenia map"] svg {
-            width: 100% !important;
-            height: auto !important;
             max-width: 100% !important;
+            width: auto !important;
+            height: auto !important;
             min-width: unset !important;
-            transform-origin: center center;
+            transform-origin: center center !important;
             transition: transform 0.2s ease;
             display: block;
             margin: 0 auto;
@@ -281,7 +318,8 @@ export function ArmeniaSVG(): React.ReactElement {
         }
         @media (max-width: 480px) {
           [aria-label="Armenia map"] {
-            height: 250px;
+            height: 250px !important;
+            padding: 4px !important;
           }
         }
       `}</style>
