@@ -27,8 +27,14 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
     const [loading, setLoading] = useState<boolean>(false)
 
     const apiUrl = useMemo(() => {
-        const url = (import.meta as any).env?.VITE_API_URL || '/api'
-        console.log('EventsList apiUrl:', url, 'env:', (import.meta as any).env)
+        const envUrl = (import.meta as any).env?.VITE_API_URL
+        // If VITE_API_URL is not set, use '/api' for local dev (vite proxy)
+        // But in production, it should be set to full backend URL
+        const url = envUrl || '/api'
+        console.log('EventsList apiUrl:', url, 'VITE_API_URL env:', envUrl)
+        if (!envUrl) {
+            console.warn('⚠️ VITE_API_URL is not set! Frontend will use relative /api path. Set VITE_API_URL in Render Dashboard environment variables.')
+        }
         return url
     }, [])
 
@@ -138,7 +144,13 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
         if (pricing) params.set('pricing', pricing)
         params.set('lng', i18n.language === 'en' ? 'en' : 'hy')
         setLoading(true)
-        fetch(`${apiUrl}/api/events?${params.toString()}`)
+        // Build correct API URL: if apiUrl is already full URL, use it as-is
+        // If it's relative (/api), use it directly (for vite proxy in dev)
+        const eventsUrl = apiUrl.startsWith('http') 
+            ? `${apiUrl}/api/events?${params.toString()}`
+            : `${apiUrl}/events?${params.toString()}`
+        console.log('Fetching events from:', eventsUrl)
+        fetch(eventsUrl)
         .then(r => {
             if (!r.ok) {
                 console.error('Events fetch failed:', r.status, r.statusText)
