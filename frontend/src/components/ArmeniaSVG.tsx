@@ -88,15 +88,26 @@ export function ArmeniaSVG(): React.ReactElement {
       if (!svg) return
       
       // Mobile-ում քարտեզը ավելի փոքր scale-ով ցուցադրել
+      const containerWidth = containerRef.current?.clientWidth || window.innerWidth
       const isMobile = window.innerWidth <= 768
       const isSmallMobile = window.innerWidth <= 480
-      if (svg) {
+      if (svg && containerRef.current) {
+        // Ստանալ SVG-ի բուն չափը
+        const svgRect = svg.getBBox()
+        const svgWidth = svgRect.width
+        const svgHeight = svgRect.height
+        
         if (isSmallMobile) {
-          svg.style.transform = 'scale(0.6)'
+          // Փոքր mobile-ի համար ավելի ագրեսիվ scale
+          const scale = Math.min(0.5, (containerWidth * 0.95) / svgWidth)
+          svg.style.transform = `scale(${scale})`
+          svg.style.transformOrigin = 'center center'
         } else if (isMobile) {
-          svg.style.transform = 'scale(0.7)'
+          // Tablet-ի համար
+          const scale = Math.min(0.6, (containerWidth * 0.95) / svgWidth)
+          svg.style.transform = `scale(${scale})`
+          svg.style.transformOrigin = 'center center'
         }
-        svg.style.transformOrigin = 'center center'
         svg.style.maxWidth = '100%'
         svg.style.width = '100%'
       }
@@ -161,20 +172,56 @@ export function ArmeniaSVG(): React.ReactElement {
     }
     mount()
     
+    // Recalculate scale after SVG loads (with a small delay to ensure dimensions are ready)
+    setTimeout(() => {
+      if (containerRef.current) {
+        const svg = containerRef.current.querySelector('svg') as SVGSVGElement | null
+        if (svg) {
+          const containerWidth = containerRef.current.clientWidth || window.innerWidth
+          const isMobile = window.innerWidth <= 768
+          const isSmallMobile = window.innerWidth <= 480
+          
+          if (isSmallMobile || isMobile) {
+            try {
+              const svgRect = svg.getBBox()
+              const svgWidth = svgRect.width || svg.clientWidth
+              if (svgWidth > 0) {
+                const maxScale = isSmallMobile ? 0.5 : 0.6
+                const scale = Math.min(maxScale, (containerWidth * 0.95) / svgWidth)
+                svg.style.transform = `scale(${scale})`
+                svg.style.transformOrigin = 'center center'
+                svg.style.maxWidth = '100%'
+                svg.style.width = '100%'
+              }
+            } catch (e) {
+              // Fallback if getBBox fails
+              const scale = isSmallMobile ? 0.5 : 0.6
+              svg.style.transform = `scale(${scale})`
+              svg.style.transformOrigin = 'center center'
+              svg.style.maxWidth = '100%'
+              svg.style.width = '100%'
+            }
+          }
+        }
+      }
+    }, 100)
+    
     // Handle window resize
     const handleResize = () => {
       if (containerRef.current) {
         const svg = containerRef.current.querySelector('svg') as SVGSVGElement | null
         if (svg) {
+          const containerWidth = containerRef.current.clientWidth || window.innerWidth
           const isMobile = window.innerWidth <= 768
           const isSmallMobile = window.innerWidth <= 480
-          if (isSmallMobile) {
-            svg.style.transform = 'scale(0.6)'
-            svg.style.transformOrigin = 'center center'
-            svg.style.maxWidth = '100%'
-            svg.style.width = '100%'
-          } else if (isMobile) {
-            svg.style.transform = 'scale(0.7)'
+          
+          if (isSmallMobile || isMobile) {
+            // Ստանալ SVG-ի բուն չափը
+            const svgRect = svg.getBBox()
+            const svgWidth = svgRect.width
+            const maxScale = isSmallMobile ? 0.5 : 0.6
+            const scale = Math.min(maxScale, (containerWidth * 0.95) / svgWidth)
+            svg.style.transform = `scale(${scale})`
             svg.style.transformOrigin = 'center center'
             svg.style.maxWidth = '100%'
             svg.style.width = '100%'
@@ -196,53 +243,45 @@ export function ArmeniaSVG(): React.ReactElement {
   }, [navigate, i18n.language, t])
 
   return (
-    <div className="relative min-h-[200px] md:min-h-[380px] w-full overflow-hidden">
+    <div className="relative min-h-[200px] md:min-h-[380px] w-full" style={{ overflow: 'hidden' }}>
       <div 
         ref={containerRef} 
-        className="w-full [&_path]:cursor-pointer p-0 md:p-4 overflow-hidden" 
+        className="w-full [&_path]:cursor-pointer p-0 md:p-4" 
         aria-label="Armenia map"
         style={{
-          touchAction: 'pan-x pan-y pinch-zoom'
+          touchAction: 'pan-x pan-y pinch-zoom',
+          overflow: 'hidden',
+          width: '100%',
+          maxWidth: '100%'
         }}
       />
       <style>{`
         @media (max-width: 768px) {
           [aria-label="Armenia map"] {
-            overflow-x: auto;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            width: 100%;
-            max-width: 100vw;
+            overflow-x: hidden !important;
+            overflow-y: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
             height: 300px;
             touch-action: pan-x pan-y pinch-zoom;
-            padding: 0;
+            padding: 0 !important;
+            box-sizing: border-box;
           }
           [aria-label="Armenia map"] svg {
             width: 100% !important;
             height: auto !important;
             max-width: 100% !important;
             min-width: unset !important;
-            transform: scale(0.7);
             transform-origin: center center;
             transition: transform 0.2s ease;
             display: block;
             margin: 0 auto;
-          }
-          [data-dropdown="user-account"] ~ div [aria-label="Armenia map"] svg {
-            width: 100% !important;
-            height: auto !important;
-            max-width: 100% !important;
-            transform: scale(0.7);
-            transform-origin: center center;
+            box-sizing: border-box;
           }
         }
         @media (max-width: 480px) {
           [aria-label="Armenia map"] {
             height: 250px;
-          }
-          [aria-label="Armenia map"] svg {
-            transform: scale(0.6);
-            max-width: 100% !important;
           }
         }
       `}</style>
