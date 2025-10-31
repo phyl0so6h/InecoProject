@@ -465,16 +465,16 @@ export function RouteGenerator(): React.ReactElement {
                             {/* Manual stop addition */}
                             <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
                                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">{t('routes.addStop')}</label>
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row gap-2">
                     <input
-                                        className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-0"
                         value={newStopText}
                         onChange={e => setNewStopText(e.target.value)}
                                         placeholder={t('routes.newStopPlaceholder')}
                                     />
                                     <button 
                                         onClick={addStop} 
-                                        className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors btt"
+                                        className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors btt flex-shrink-0 whitespace-nowrap"
                                     >
                                         {t('routes.add')}
                                     </button>
