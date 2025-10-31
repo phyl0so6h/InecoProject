@@ -61,14 +61,14 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
         top: position.top,
         left: position.left
       }}
-      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
     >
       <div className="p-3 space-y-1">
         <Link
           to="/profile"
           className="flex items-center gap-3 px-4 py-3 text-sm text-gray-900 dark:text-gray-200 hover:bg-[#BC9E82]/10 dark:hover:bg-[#BC9E82]/20 rounded-lg transition-all duration-200 group"
           onClick={(e) => {
-            e.preventDefault()
+            e.stopPropagation()
             setIsOpen(false)
             navigate('/profile')
           }}
@@ -82,7 +82,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           to="/profile/events"
           className="flex items-center gap-3 px-4 py-3 text-sm text-gray-900 dark:text-gray-200 hover:bg-[#BC9E82]/10 dark:hover:bg-[#BC9E82]/20 rounded-lg transition-all duration-200 group"
           onClick={(e) => {
-            e.preventDefault()
+            e.stopPropagation()
             setIsOpen(false)
             navigate('/profile/events')
           }}
@@ -96,7 +96,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           to="/profile/routes"
           className="flex items-center gap-3 px-4 py-3 text-sm text-gray-900 dark:text-gray-200 hover:bg-[#BC9E82]/10 dark:hover:bg-[#BC9E82]/20 rounded-lg transition-all duration-200 group"
           onClick={(e) => {
-            e.preventDefault()
+            e.stopPropagation()
             setIsOpen(false)
             navigate('/profile/routes')
           }}
@@ -110,7 +110,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
           to="/profile/joined"
           className="flex items-center gap-3 px-4 py-3 text-sm text-gray-900 dark:text-gray-200 hover:bg-[#BC9E82]/10 dark:hover:bg-[#BC9E82]/20 rounded-lg transition-all duration-200 group"
           onClick={(e) => {
-            e.preventDefault()
+            e.stopPropagation()
             setIsOpen(false)
             navigate('/profile/joined')
           }}
@@ -125,7 +125,7 @@ export function UserAccount({ userRole, onLogout }: Props): React.ReactElement {
             to="/profile/create-event"
             className="flex items-center gap-3 px-4 py-3 text-sm text-gray-900 dark:text-gray-200 hover:bg-[#BC9E82]/10 dark:hover:bg-[#BC9E82]/20 rounded-lg transition-all duration-200 group"
             onClick={(e) => {
-              e.preventDefault()
+              e.stopPropagation()
               setIsOpen(false)
               navigate('/profile/create-event')
             }}
