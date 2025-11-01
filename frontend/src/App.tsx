@@ -59,14 +59,24 @@ export function App(): React.ReactElement {
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 py-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group" onClick={() => setMobileMenuOpen(false)}>
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm group-hover:scale-105 transition-transform" style={{backgroundColor: '#BC9E82'}}>
-                🇦🇲
+              <div className="w-auto h-8 px-2 rounded-lg flex items-center justify-center text-white font-bold text-sm group-hover:scale-105 transition-transform" style={{backgroundColor: '#BC9E82'}}>
+                AERON
               </div>
-              <span className="text-xl font-bold text-gray-900 dark:text-white hidden md:block">{t('app.name')}</span>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center whitespace-nowrap">
+              <NavLink 
+                to="/" 
+                className={({isActive}) => `px-6 py-2 rounded-md font-medium transition-colors ${
+                  isActive 
+                    ? 'text-white' 
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                }`}
+                style={({isActive}) => isActive ? {backgroundColor: '#BC9E82'} : {}}
+              >
+                {t('nav.home')}
+              </NavLink>
               <NavLink 
                 to="/events" 
                 className={({isActive}) => `px-6 py-2 rounded-md font-medium transition-colors ${
@@ -202,6 +212,18 @@ export function App(): React.ReactElement {
           {mobileMenuOpen && (
             <div className="lg:hidden border-t border-gray-200/20 dark:border-gray-700/20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm">
               <nav className="flex flex-col px-4 py-4 gap-2">
+                <NavLink 
+                  to="/" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({isActive}) => `px-4 py-3 rounded-md font-medium transition-colors ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                  style={({isActive}) => isActive ? {backgroundColor: '#BC9E82'} : {}}
+                >
+                  {t('nav.home')}
+                </NavLink>
                 <NavLink 
                   to="/events" 
                   onClick={() => setMobileMenuOpen(false)}
