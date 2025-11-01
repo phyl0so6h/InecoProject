@@ -2,10 +2,13 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+import { PrismaClient } from '../generated/prisma';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const prisma = new PrismaClient();
 
 type JwtUser = { id: string; role: 'tourist' | 'provider' | 'admin' };
 
@@ -539,16 +542,73 @@ app.get('/api/routes/:id', authenticate, (req: Request, res: Response) => {
 });
 
 // Events mock endpoints
-app.get('/api/events', (req: Request, res: Response) => {
+app.get('/api/events', async (req: Request, res: Response) => {
   const { region, type, pricing, lng } = req.query as { [key: string]: string | undefined };
   const language = lng === 'en' ? 'en' : 'hy';
-  let items = sampleEventsRaw;
-  if (region && typeof region === 'string') items = items.filter(e => e.region === region);
-  if (type && typeof type === 'string') items = items.filter(e => e.type === type);
-  if (pricing === 'free') items = items.filter(e => e.pricing.isFree);
-  if (pricing === 'paid') items = items.filter(e => !e.pricing.isFree);
-  const mapped = items.map(e => toPublicEvent(e as RawEvent, language));
-  res.json({ items: mapped, total: mapped.length });
+
+  try {
+    // Get events from database
+    const where: any = {};
+    if (region && typeof region === 'string') {
+      where.region = region;
+    }
+    if (type && typeof type === 'string') {
+      where.type = type;
+    }
+
+    const dbEvents = await prisma.event.findMany({
+      where,
+      orderBy: { date: 'asc' }
+    });
+
+    // Also get mock events for demo
+    let items = sampleEventsRaw;
+    if (region && typeof region === 'string') items = items.filter(e => e.region === region);
+    if (type && typeof type === 'string') items = items.filter(e => e.type === type);
+    if (pricing === 'free') items = items.filter(e => e.pricing.isFree);
+    if (pricing === 'paid') items = items.filter(e => !e.pricing.isFree);
+    const mapped = items.map(e => toPublicEvent(e as RawEvent, language));
+
+    // Combine database events with mock events
+    const dbMapped = dbEvents.map(e => ({
+      id: e.id,
+      title: e.title,
+      description: e.description,
+      region: e.region,
+      area: e.region, // Use region as area if no specific area field
+      type: e.type,
+      date: e.date.toISOString(),
+      startDate: e.date.toISOString(),
+      endDate: e.date.toISOString(),
+      imageUrl: e.imageUrl || undefined,
+      pricing: {
+        isFree: !e.budgetMin && !e.budgetMax,
+        price: e.budgetMax || e.budgetMin || 0
+      }
+    }));
+
+    // Merge: database events first, then mock events (avoid duplicates by id)
+    const allEvents = [...dbMapped, ...mapped.filter(m => !dbMapped.find(d => d.id === m.id))];
+
+    // Apply pricing filter after merge
+    const filtered = pricing === 'free'
+      ? allEvents.filter(e => e.pricing.isFree)
+      : pricing === 'paid'
+        ? allEvents.filter(e => !e.pricing.isFree)
+        : allEvents;
+
+    res.json({ items: filtered, total: filtered.length });
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    // Fallback to mock events on error
+    let items = sampleEventsRaw;
+    if (region && typeof region === 'string') items = items.filter(e => e.region === region);
+    if (type && typeof type === 'string') items = items.filter(e => e.type === type);
+    if (pricing === 'free') items = items.filter(e => e.pricing.isFree);
+    if (pricing === 'paid') items = items.filter(e => !e.pricing.isFree);
+    const mapped = items.map(e => toPublicEvent(e as RawEvent, language));
+    res.json({ items: mapped, total: mapped.length });
+  }
 });
 
 app.get('/api/events/:id', (req: Request, res: Response) => {
@@ -1042,18 +1102,44 @@ app.get('/users', authenticate, (req: Request, res: Response) => {
   res.json({ items: mockUsers });
 });
 
-app.post('/api/events', authenticate, (req: Request, res: Response) => {
+app.post('/api/events', authenticate, async (req: Request, res: Response) => {
   const user: JwtUser = (req as any).user;
   if (user.role === 'tourist') return res.status(403).json({ error: 'Forbidden' });
 
-  // In real implementation, save to database
-  const newEvent = {
-    id: `ev_${Date.now()}`,
-    ...req.body,
-    createdAt: new Date().toISOString()
-  };
+  try {
+    const { title, description, region, type, date, imageUrl } = req.body;
 
-  res.status(201).json(newEvent);
+    if (!title || !description || !region || !type || !date) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Save to database
+    const newEvent = await prisma.event.create({
+      data: {
+        title,
+        description,
+        region,
+        type,
+        date: new Date(date),
+        imageUrl: imageUrl || null,
+        organizerId: user.id
+      }
+    });
+
+    res.status(201).json({
+      id: newEvent.id,
+      title: newEvent.title,
+      description: newEvent.description,
+      region: newEvent.region,
+      type: newEvent.type,
+      date: newEvent.date.toISOString(),
+      imageUrl: newEvent.imageUrl,
+      createdAt: newEvent.createdAt.toISOString()
+    });
+  } catch (error) {
+    console.error('Error creating event:', error);
+    res.status(500).json({ error: 'Failed to create event' });
+  }
 });
 
 app.post('/api/travel-plans', authenticate, (req: Request, res: Response) => {
