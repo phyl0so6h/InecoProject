@@ -1,5 +1,6 @@
 {
-    "app.name": "Platform",
+    "app.name": "AERON",
+    "nav.home": "Home",
     "nav.events": "Events",
     "nav.routes": "Routes",
     "nav.info": "About Us",
