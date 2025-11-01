@@ -2,8 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-// @ts-ignore - Prisma generated client
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 
 const app = express();
 app.use(cors());
