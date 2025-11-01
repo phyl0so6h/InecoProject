@@ -570,7 +570,7 @@ app.get('/api/events', async (req: Request, res: Response) => {
     const mapped = items.map(e => toPublicEvent(e as RawEvent, language));
 
     // Combine database events with mock events
-    const dbMapped = dbEvents.map(e => ({
+    const dbMapped = dbEvents.map((e: any) => ({
       id: e.id,
       title: e.title,
       description: e.description,
@@ -588,7 +588,7 @@ app.get('/api/events', async (req: Request, res: Response) => {
     }));
 
     // Merge: database events first, then mock events (avoid duplicates by id)
-    const allEvents = [...dbMapped, ...mapped.filter(m => !dbMapped.find(d => d.id === m.id))];
+    const allEvents = [...dbMapped, ...mapped.filter(m => !dbMapped.find((d: any) => d.id === m.id))];
 
     // Apply pricing filter after merge
     const filtered = pricing === 'free'
