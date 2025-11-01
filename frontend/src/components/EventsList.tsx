@@ -208,23 +208,43 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
                 }
                 
                 return (
-                <div key={ev.id} className="rounded-lg border p-4 grid gap-2 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-lg hover:border-[#BC9E82] bg-white dark:bg-slate-800">
-                    <img
-                        src={'/placeholder.svg'}
-                        alt={ev.title}
-                        className="w-full h-36 object-cover rounded transition-transform duration-300 hover:scale-110"
-                    />
-                    <div className="font-semibold">{ev.title}</div>
-                    <div className="text-sm opacity-70">{ev.area} · {getEventDuration(ev)}</div>
-                    <div className={`text-sm font-medium ${statusColors[status.status]}`}>
-                        {status.message}
-                    </div>
-                    <div className="text-sm">{ev.description}</div>
-                    {ev.pricing && (
-                        <div className="text-sm font-medium">
-                            {t('field.pricing')}: {ev.pricing.isFree ? t('pricing.free') : `${ev.pricing.price.toLocaleString()} AMD`}
+                <div key={ev.id} className="rounded-lg border overflow-hidden grid gap-2 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-lg hover:border-[#BC9E82] bg-white dark:bg-slate-800">
+                    {/* Image */}
+                    <div className="relative h-48 w-full">
+                        {ev.imageUrl ? (
+                            <img
+                                src={ev.imageUrl}
+                                alt={ev.title}
+                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'
+                                }}
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-to-br from-[#BC9E82]/20 to-[#8FBC8F]/20">
+                                🎭
+                            </div>
+                        )}
+                        {/* Region Badge */}
+                        <div className="absolute top-2 right-2 px-2 py-1 rounded-md bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-xs font-medium text-gray-700 dark:text-gray-300 shadow-sm">
+                            {ev.region || ev.area}
                         </div>
-                    )}
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="p-4 space-y-2">
+                        <div className="font-semibold text-lg">{ev.title}</div>
+                        <div className="text-sm opacity-70">{ev.area} · {getEventDuration(ev)}</div>
+                        <div className={`text-sm font-medium ${statusColors[status.status]}`}>
+                            {status.message}
+                        </div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{ev.description}</div>
+                        {ev.pricing && (
+                            <div className="text-sm font-medium">
+                                {t('field.pricing')}: {ev.pricing.isFree ? t('pricing.free') : `${ev.pricing.price.toLocaleString()} AMD`}
+                            </div>
+                        )}
+                    </div>
                 </div>
                 )
             })}

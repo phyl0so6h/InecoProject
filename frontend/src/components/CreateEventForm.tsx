@@ -25,6 +25,8 @@ export function CreateEventForm({ onSuccess, onCancel }: Props): React.ReactElem
   })
 
   const [loading, setLoading] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const apiUrl = useMemo(() => (import.meta as any).env?.VITE_API_URL || '/api', [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,6 +58,37 @@ export function CreateEventForm({ onSuccess, onCancel }: Props): React.ReactElem
 
   const handleChange = (field: keyof EventFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file')
+        return
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB')
+        return
+      }
+      
+      setImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+        setFormData(prev => ({ ...prev, imageUrl: reader.result as string }))
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleImageUrlChange = (url: string) => {
+    setImageFile(null)
+    setImagePreview(null)
+    handleChange('imageUrl', url)
   }
 
   return (
@@ -138,15 +171,70 @@ export function CreateEventForm({ onSuccess, onCancel }: Props): React.ReactElem
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Image URL</label>
-            <input
-              type="url"
-              value={formData.imageUrl}
-              onChange={(e) => handleChange('imageUrl', e.target.value)}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700"
-              placeholder="https://example.com/image.jpg"
-            />
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-2">Event Image</label>
+            
+            {/* Image Upload Option */}
+            <div className="mb-3">
+              <label className="block text-xs text-gray-600 dark:text-gray-400 mb-2">Upload Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/20 dark:file:text-blue-300"
+              />
+              <p className="text-xs text-gray-500 mt-1">Max size: 5MB</p>
+            </div>
+
+            {/* Or Image URL Option */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-neutral-900 text-gray-500">or</span>
+              </div>
+            </div>
+
+            <div className="mt-3">
+              <label className="block text-xs text-gray-600 dark:text-gray-400 mb-2">Image URL</label>
+              <input
+                type="url"
+                value={imageFile ? '' : formData.imageUrl}
+                onChange={(e) => handleImageUrlChange(e.target.value)}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700"
+                placeholder="https://example.com/image.jpg"
+                disabled={!!imageFile}
+              />
+            </div>
+
+            {/* Image Preview */}
+            {(imagePreview || formData.imageUrl) && (
+              <div className="mt-3">
+                <label className="block text-xs text-gray-600 dark:text-gray-400 mb-2">Preview</label>
+                <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
+                  <img
+                    src={imagePreview || formData.imageUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageFile(null)
+                      setImagePreview(null)
+                      setFormData(prev => ({ ...prev, imageUrl: '' }))
+                    }}
+                    className="absolute top-2 right-2 px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
