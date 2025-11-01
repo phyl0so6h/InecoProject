@@ -580,7 +580,7 @@ app.get('/api/events', async (req: Request, res: Response) => {
       date: e.date.toISOString(),
       startDate: e.date.toISOString(),
       endDate: e.date.toISOString(),
-      imageUrl: e.imageUrl || undefined,
+      imageUrl: e.imageUrl ? e.imageUrl : undefined,
       pricing: {
         isFree: !e.budgetMin && !e.budgetMax,
         price: e.budgetMax || e.budgetMin || 0

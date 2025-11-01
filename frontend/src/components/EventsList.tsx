@@ -211,13 +211,16 @@ export function EventsList({ region = '', type = '', pricing = '' }: Props): Rea
                 <div key={ev.id} className="rounded-lg border overflow-hidden grid gap-2 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-lg hover:border-[#BC9E82] bg-white dark:bg-slate-800">
                     {/* Image */}
                     <div className="relative h-48 w-full">
-                        {ev.imageUrl ? (
+                        {ev.imageUrl && ev.imageUrl.trim() && ev.imageUrl.length > 10 ? (
                             <img
                                 src={ev.imageUrl}
                                 alt={ev.title}
                                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                                 onError={(e) => {
                                     (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'
+                                }}
+                                onLoad={() => {
+                                    console.log('Image loaded successfully for event:', ev.id)
                                 }}
                             />
                         ) : (
