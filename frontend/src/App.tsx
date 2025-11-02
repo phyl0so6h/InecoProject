@@ -59,9 +59,11 @@ export function App(): React.ReactElement {
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 py-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group" onClick={() => setMobileMenuOpen(false)}>
-              <div className="w-auto h-8 px-2 rounded-lg flex items-center justify-center text-white font-bold text-sm group-hover:scale-105 transition-transform" style={{backgroundColor: '#BC9E82'}}>
-                SpiMod
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="SpiMod Logo" 
+                className="h-12 w-auto object-contain group-hover:scale-105 transition-transform"
+              />
             </Link>
 
             {/* Desktop Navigation */}
