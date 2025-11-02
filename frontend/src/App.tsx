@@ -60,7 +60,7 @@ export function App(): React.ReactElement {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group" onClick={() => setMobileMenuOpen(false)}>
               <div className="w-auto h-8 px-2 rounded-lg flex items-center justify-center text-white font-bold text-sm group-hover:scale-105 transition-transform" style={{backgroundColor: '#BC9E82'}}>
-                AERON
+                SpiMod
               </div>
             </Link>
 

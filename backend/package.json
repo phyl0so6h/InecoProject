@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "spimod-backend",
   "version": "1.0.0",
   "description": "API for Պլատֆորմն (Armenia Tourism Platform)",
   "main": "dist/index.js",
