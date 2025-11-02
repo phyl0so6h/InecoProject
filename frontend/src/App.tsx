@@ -60,9 +60,23 @@ export function App(): React.ReactElement {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group" onClick={() => setMobileMenuOpen(false)}>
               <img 
-                src="/logo.png" 
+                src="/logo.png"
                 alt="SpiMod Logo" 
                 className="h-12 w-auto object-contain group-hover:scale-105 transition-transform"
+                onError={(e) => {
+                  console.error('Logo image failed to load from /logo.png');
+                  // Fallback to text if image fails
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent && !parent.querySelector('.logo-fallback')) {
+                    const fallback = document.createElement('div');
+                    fallback.className = 'logo-fallback w-auto h-8 px-2 rounded-lg flex items-center justify-center text-white font-bold text-sm';
+                    fallback.style.backgroundColor = '#BC9E82';
+                    fallback.textContent = 'SpiMod';
+                    parent.appendChild(fallback);
+                  }
+                }}
               />
             </Link>
 
