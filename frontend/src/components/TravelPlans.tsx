@@ -274,7 +274,6 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                     
                     {/* Route */}
                     <div className="flex items-center gap-2 mb-3 p-2 bg-gray-50 dark:bg-gray-700 rounded">
-                        <span>🚗</span>
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             {(function mapRegion(r: string){
                                 if (i18n.language !== 'en') return r
@@ -340,7 +339,6 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
             })}
             {!loading && !plans.length && (
                 <div className="col-span-full text-center py-8">
-                    <div className="text-4xl mb-2">🚗</div>
                     <div className="text-gray-600 dark:text-gray-400">{t('travel.empty')}</div>
                 </div>
             )}
@@ -360,7 +358,7 @@ export function TravelPlans({ to = '', eventId = '' }: Props): React.ReactElemen
                                     <div>
                                         <h2 className="font-bold text-xl mb-1">{plan.eventTitle}</h2>
                                         <div className="text-white opacity-90 text-sm">
-                                            🚗 {getTranslatedRegionName(plan.from)} → {getTranslatedRegionName(plan.to)}
+                                            {getTranslatedRegionName(plan.from)} → {getTranslatedRegionName(plan.to)}
                                         </div>
                                     </div>
                                     <button

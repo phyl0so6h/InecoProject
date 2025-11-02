@@ -9,7 +9,7 @@ export function TravelPlansPage(): React.ReactElement {
     <div className="space-y-6">
       {/* Page Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">🚗 {t('nav.travelPlans')}</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{t('nav.travelPlans')}</h1>
         <p className="text-gray-600 dark:text-gray-400">
           {t('travel.subtitle')}
         </p>
