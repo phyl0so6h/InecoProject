@@ -13,6 +13,8 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: DATABASE_URL
+        # Update this to reference your existing database name in Render dashboard
+        # Or set it manually as an environment variable
         fromDatabase:
           name: project-x-db
           property: connectionString
@@ -20,17 +22,13 @@ services:
 
   # Frontend Static Site
   - type: web
-    name: project-x
+    name: project-x-frontend
     env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     # Note: Set VITE_API_URL manually in Render dashboard after backend is deployed
-    # It should be: https://project-x-backend.onrender.com
-
-databases:
-  # PostgreSQL Database
-  - name: project-x-db
-    plan: free
-    databaseName: project_x
-    user: project_x_user
+    # It should be: https://spimod-backend.onrender.com
+# Database section removed - use your existing free tier database
+# If you need to create a new database, do it manually in Render dashboard
+# and update the fromDatabase.name above to match your existing database name
