@@ -32,5 +32,5 @@ databases:
   # PostgreSQL Database
   - name: project-x-db
     plan: free
-    databaseName: project-x
-    user: project-x_user
+    databaseName: project_x
+    user: project_x_user
