@@ -12,12 +12,9 @@ services:
         value: production
       - key: JWT_SECRET
         generateValue: true
-      - key: DATABASE_URL
-        # Update this to reference your existing database name in Render dashboard
-        # Or set it manually as an environment variable
-        fromDatabase:
-          name: project-x-db
-          property: connectionString
+      # DATABASE_URL must be set manually in Render dashboard
+      # Go to your existing database in Render dashboard and copy the "Internal Database URL"
+      # Then add it as an environment variable named DATABASE_URL in the service settings
     healthCheckPath: /health
 
   # Frontend Static Site
@@ -28,7 +25,4 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     # Note: Set VITE_API_URL manually in Render dashboard after backend is deployed
-    # It should be: https://spimod-backend.onrender.com
-# Database section removed - use your existing free tier database
-# If you need to create a new database, do it manually in Render dashboard
-# and update the fromDatabase.name above to match your existing database name
+    # It should be: https://project-x-backend.onrender.com
